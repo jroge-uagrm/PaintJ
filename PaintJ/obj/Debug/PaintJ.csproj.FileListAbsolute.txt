@@ -1,0 +1,10 @@
+C:\Users\PC\Desktop\Program. Grafica\PaintJ\PaintJ\PaintJ\bin\Debug\PaintJ.exe.config
+C:\Users\PC\Desktop\Program. Grafica\PaintJ\PaintJ\PaintJ\bin\Debug\PaintJ.exe
+C:\Users\PC\Desktop\Program. Grafica\PaintJ\PaintJ\PaintJ\bin\Debug\PaintJ.pdb
+C:\Users\PC\Desktop\Program. Grafica\PaintJ\PaintJ\PaintJ\obj\Debug\PaintJ.csprojAssemblyReference.cache
+C:\Users\PC\Desktop\Program. Grafica\PaintJ\PaintJ\PaintJ\obj\Debug\PaintJ.Form1.resources
+C:\Users\PC\Desktop\Program. Grafica\PaintJ\PaintJ\PaintJ\obj\Debug\PaintJ.Properties.Resources.resources
+C:\Users\PC\Desktop\Program. Grafica\PaintJ\PaintJ\PaintJ\obj\Debug\PaintJ.csproj.GenerateResource.cache
+C:\Users\PC\Desktop\Program. Grafica\PaintJ\PaintJ\PaintJ\obj\Debug\PaintJ.csproj.CoreCompileInputs.cache
+C:\Users\PC\Desktop\Program. Grafica\PaintJ\PaintJ\PaintJ\obj\Debug\PaintJ.exe
+C:\Users\PC\Desktop\Program. Grafica\PaintJ\PaintJ\PaintJ\obj\Debug\PaintJ.pdb
