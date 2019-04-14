@@ -16,31 +16,36 @@ namespace PaintJ
         public Objeto objeto;
         public Poligono poligono;
         public Punto puntoAnterior, punto;
-        public bool dibujar, poligonoTerminado;
+        public bool poligonoTerminado;
         public float x, y;
-        public int a, b,H,V;
+        public int a,b,H,V;
 
-        public Painter(Graphics nuevoPapel,int nuevaH,int nuevaV)
+        public Painter(int nuevaH,int nuevaY)
         {
-            this.papel = nuevoPapel;
-            this.objeto = new Objeto();
-            this.poligono = new Poligono();
-            this.dibujar = false;
-            this.x = this.y = this.a=this.b=0;
-            this.H = nuevaH;this.V = nuevaV;
+            this.H = nuevaH;
+            this.V = nuevaY;
             this.punto = null;
             this.puntoAnterior = null;
         }
 
-        public String puedeDibujar()
+        public void nuevoObjeto(Graphics nuevoPapel,int nuevaH,int nuevaY)
         {
-            return dibujar ? "PUEDE DIBUJAR" : "NO PUEDE DIBUJAR";
+            this.papel = nuevoPapel;
+            this.H = nuevaH;
+            this.V = nuevaY;
+            this.objeto = new Objeto();
+            this.poligono = new Poligono();
+            punto = puntoAnterior = null;
+        }
+
+        public void pintarEje()
+        {
+            papel.DrawLine(new Pen(Color.Red), H/2, 0, H/2, V);
+            papel.DrawLine(new Pen(Color.Red), 0, V/2, H, V/2);
         }
 
         public void pintar()
         {
-            papel.DrawLine(new Pen(Color.Red), H/2, 0, H/2, V);
-            papel.DrawLine(new Pen(Color.Red), 0, V/2, H, V/2);
             int cantidadPoligonos = objeto.listaDePoligonos.Count;
             for (int i = 1; i <= cantidadPoligonos; i++)
             {
@@ -54,14 +59,12 @@ namespace PaintJ
                     poligono.listaDePuntos.RemoveFirst();
                     poligono.listaDePuntos.AddLast(puntoAnterior);
                     punto = (Punto)poligono.listaDePuntos.First();
-                    int x1, x2, y1, y2; x1 = x2 = y1 = y2 = 0;
-                    descoordenadas(puntoAnterior.x, puntoAnterior.y);
-                    x1 = (int)a;
-                    y1 = (int)b;
-                    descoordenadas(punto.x, punto.y);
-                    x2 = (int)a;
-                    y2 = (int)b;
-                    papel.DrawLine(lapiz, x1, y1, x2, y2);
+                    Punto nuevoPA = puntoEnDescoordenadas(puntoAnterior.x, puntoAnterior.y);
+                    Punto nuevoP = puntoEnDescoordenadas(punto.x, punto.y);
+                    papel.DrawLine(
+                        lapiz,
+                        nuevoPA.x,nuevoPA.y,
+                        nuevoP.x,nuevoP.y);
                 }
                 puntoAnterior = (Punto)poligono.listaDePuntos.First();
                 poligono.listaDePuntos.RemoveFirst();
@@ -71,11 +74,30 @@ namespace PaintJ
             }
         }
 
-        public void dibujarLinea(int a1,int b1)
+        public Punto puntoEnDescoordenadas(float x1, float y1)
         {
-            if (dibujar)
+            x = x1;
+            y = y1;
+            if (H > V)
             {
-                coordenadas(a1, b1);
+                a = (int)((float)((float)((float)(x / 2) + 50) * H) / 100);
+                b = (V / 2) - (int)((float)((float)(y / 2) * H) / 100);
+            }
+            else
+            {
+                //INSERTAR FORMULAS
+            }
+            return new Punto(a, b);
+        }
+
+        public void dibujarLinea()
+        {
+            if (poligonoTerminado)
+            {
+                poligono = new Poligono();
+                poligonoTerminado = false;
+
+            }
                 punto = new Punto(x,y);
                 if (puntoAnterior != null)
                 {
@@ -88,100 +110,24 @@ namespace PaintJ
                     papel.DrawLine(lapiz,
                         x1,y1,
                         x2,y2);
-                    poligonoTerminado = false;
                 }
                 poligono.añadirPunto(punto);
                 puntoAnterior=punto;
-            }
         }
 
-        public void finalizarPoligono()
+        public void setObjeto(Objeto nuevoObjeto)
         {
-            objeto.añadirPoligono(poligono);
-            poligono = new Poligono();
             poligonoTerminado = true;
-            punto = null;
-            puntoAnterior = null;
+            this.objeto = nuevoObjeto;
         }
 
-        public String abrir()
+        public void terminarPoligono()
         {
-            String resultado = "ABIERTO CORRECTAMENTE";
-            try
-            {
-                using (System.Windows.Forms.OpenFileDialog dialogo =
-                    new System.Windows.Forms.OpenFileDialog())
-                {
-                    if (dialogo.ShowDialog() ==
-                        System.Windows.Forms.DialogResult.OK)
-                    {
-                        using (Stream st = File.Open(
-                            dialogo.FileName, FileMode.Open))
-                        {
-                            var binfor = new System.Runtime.
-                                Serialization.Formatters.
-                                Binary.BinaryFormatter();
-                            objeto = (Objeto)binfor.Deserialize(st);
-                            pintar();
-                            poligono = new Poligono();
-                            punto = null;
-                            puntoAnterior = null;
-                            poligonoTerminado = true;
-                        }
-                    }
-                    else
-                    {
-                        resultado = "OPERACION CANCELADA";
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                resultado = "ERROR AL ABRIR EL ARCHIVO";
-            }
-            return resultado;
-        }
-
-        public String guardar()
-        {
-            String resultado = "GUARDADO CORRECTAMENTE";
-            if (!poligonoTerminado)
-            {
                 objeto.añadirPoligono(poligono);
-                poligono = new Poligono();
+                //poligono = new Poligono();
                 poligonoTerminado = true;
                 punto = null;
                 puntoAnterior = null;
-            }
-            try
-            {
-                using (System.Windows.Forms.SaveFileDialog dialogo =
-                    new System.Windows.Forms.SaveFileDialog())
-                {
-                    if (dialogo.ShowDialog() ==
-                        System.Windows.Forms.DialogResult.OK)
-                    {
-                        using (Stream st = File.Open(
-                            dialogo.FileName, FileMode.Create))
-                        {
-                            var binfor = new System.Runtime.
-                                Serialization.Formatters.
-                                Binary.BinaryFormatter();
-                            binfor.Serialize(st, this.objeto);
-                        }
-                    }
-                    else
-                    {
-                        resultado = "OPERACION CANCELADA";
-                    }
-
-                }
-            }
-            catch (Exception ex)
-            {
-                resultado= "ERROR AL GUARDAR EL ARCHIVO";
-            }
-            return resultado;
         }
 
         public void coordenadas(int a1,int b1)
@@ -214,8 +160,41 @@ namespace PaintJ
             }
         }
 
-        public void vaADibujar(){dibujar = !dibujar;}
+        public bool isObjetoVacio()
+        {
+            return objeto.listaDePoligonos.Count==0;
+        }
 
+        public void trasladarPoligono()
+        {
+            poligono.trasladar(new Punto(x, y));
+        }
 
+        public bool noEstaVacio()
+        {
+            if (objeto == null)
+            {
+                return false;
+            }
+            else if(objeto.listaDePoligonos.Count == 0)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public void rotarPoligono(double angulo)
+        {
+            poligono.puntoDeReferenciaPredeterminado();
+            poligono.rotar(angulo);
+        }
+
+        public void rotarPuntoPoligono()
+        {
+            poligono.setPuntoReferencia(new Punto(x, y));
+        }
     }
 }
