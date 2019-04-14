@@ -73,18 +73,11 @@ namespace PaintJ
                 listaDePuntos.AddLast(nuevoPunto);
             }
         }
-        public void puntoDeReferenciaPredeterminado()
-        {
-            if (puntoReferencia == null)
-            {
-                setPuntoReferenciaEnCentro();
-            }
-        }
 
         public void trasladar(Punto nuevoPuntoReferencia)
         {
             enFuncionACentro();
-            puntoReferencia= nuevoPuntoReferencia;
+            puntoReferencia = nuevoPuntoReferencia;
             enFuncionANoCentro();
         }
         public void rotar(Double angulo)

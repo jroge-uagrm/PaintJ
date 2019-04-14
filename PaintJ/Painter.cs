@@ -123,8 +123,8 @@ namespace PaintJ
 
         public void terminarPoligono()
         {
+                poligono.setPuntoReferenciaEnCentro();
                 objeto.añadirPoligono(poligono);
-                //poligono = new Poligono();
                 poligonoTerminado = true;
                 punto = null;
                 puntoAnterior = null;
@@ -188,8 +188,8 @@ namespace PaintJ
 
         public void rotarPoligono(double angulo)
         {
-            poligono.puntoDeReferenciaPredeterminado();
             poligono.rotar(angulo);
+            poligono.setPuntoReferenciaEnCentro();
         }
 
         public void rotarPuntoPoligono()
