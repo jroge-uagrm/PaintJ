@@ -60,50 +60,17 @@ namespace PaintJ
                     tamañoHDondeDibujar(),
                     tamañoVDondeDibujar());
             dibujador.setObjeto(obj);
-            if (!dibujador.isObjetoVacio())
+            if (dibujador.noEstaVacio())
             {
                 dibujador.pintar();
-                dibujador.pintarEje();
             }
+            dibujador.pintarEje();
         }
 
         private void Form1_ResizeEnd(object sender, EventArgs e)
         {
             textBox1.Text = tamañoHDondeDibujar().ToString();
             textBox2.Text = tamañoVDondeDibujar().ToString();
-        }
-
-        private void Form1_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (puedeDibujar)
-            {
-                dibujador.dibujarLinea();
-            }
-            else 
-            {
-                switch (efecto)
-                {
-                    case "trasladar":
-                        dibujador.trasladarPoligono();
-                        Objeto obj = dibujador.objeto;
-                        nuevoToolStripMenuItem_Click(sender, e);
-                        dibujador.nuevoObjeto(
-                            dondeDibujar(),
-                            tamañoHDondeDibujar(),
-                            tamañoVDondeDibujar());
-                        dibujador.setObjeto(obj);
-                        dibujador.pintar();
-                        puedeDibujar = true;
-                        aviso.Text = "Poligono trasladado, puede seguir dibujando";
-                        break;
-                    case "rotarPunto":
-                        dibujador.rotarPuntoPoligono();
-                        rotarPoligonoAnguloToolStripMenuItem_Click(sender, e);
-                        break;
-                    default:
-                        break;
-                }
-            }
         }
 
         private void Form1_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -114,9 +81,27 @@ namespace PaintJ
             }
         }
 
+        private void areaDibujo_MouseMove(object sender, MouseEventArgs e)
+        {
+            textBox3.Text = e.X.ToString();
+            textBox4.Text = e.Y.ToString();
+            dibujador.coordenadas(e.X, e.Y);
+            textBox5.Text = dibujador.x.ToString();
+            textBox6.Text = dibujador.y.ToString();
+        }
+
+        private void areaDibujo_MouseClick(object sender, MouseEventArgs e)
+        {
+            Form1_MouseClick(sender, e);
+        }
+
+        private void areaDibujo_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            Form1_MouseDoubleClick(sender, e);
+        }
+
         private void nuevoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            areaDibujo.Image = null;
             areaDibujo.Refresh();
             dibujador.nuevoObjeto(
                 dondeDibujar(),
@@ -213,143 +198,191 @@ namespace PaintJ
             }
         }
 
-        private void areaDibujo_MouseMove(object sender, MouseEventArgs e)
+        private void modificarElementos(
+            bool a, bool b, bool c,
+            string a1, string b1, string c1)
         {
-            textBox3.Text = e.X.ToString();
-            textBox4.Text = e.Y.ToString();
-            dibujador.coordenadas(e.X, e.Y);
-            textBox5.Text = dibujador.x.ToString();
-            textBox6.Text = dibujador.y.ToString();
+            avisoTxt.Visible = a;
+            if (a) { avisoTxt.BringToFront(); } else { avisoTxt.SendToBack(); }
+            avisoTxt.Text = a1;
+            avisoTxt.Location = new Point(
+                        aviso.Width + 1,
+                        menuStrip1.Height + menuStrip1.Location.Y);
+
+            avisoBtn.Visible = b;
+            if (b) { avisoBtn.BringToFront(); } else { avisoBtn.SendToBack(); }
+            avisoBtn.Text = b1;
+            avisoBtn.Location = new Point(
+                avisoTxt.Width + avisoTxt.Location.X + 1,
+                menuStrip1.Height + menuStrip1.Location.Y);
+
+            avisoCheck.Visible = c;
+            if (c) { avisoCheck.BringToFront(); } else { avisoCheck.SendToBack(); }
+            avisoCheck.Text = c1;
+            avisoCheck.Location = new Point(
+                avisoBtn.Width + avisoBtn.Location.X + 1,
+                menuStrip1.Height + menuStrip1.Location.Y);
         }
 
-        private void areaDibujo_MouseClick(object sender, MouseEventArgs e)
+        private bool esPosible()
         {
-            Form1_MouseClick(sender,e);
+            if (dibujador.noEstaVacio())
+            {
+                if (dibujador.objeto.poligonoTerminado)
+                {
+                    return true;
+                }
+                else
+                {
+                    aviso.Text = "Debe terminar el poligono";
+                }
+            }
+            else
+            {
+                aviso.Text = "No hay dibujo";
+            }
+            return false;
         }
 
-        private void areaDibujo_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void Form1_MouseClick(object sender, MouseEventArgs e)
         {
-            Form1_MouseDoubleClick(sender, e);
+            Refresh();
+            switch (efecto)
+            {
+                case "trasladar":
+                    dibujador.trasladarPoligono();
+                    dibujador.pintar();
+                    aviso.Text = "Poligono trasladado, puede seguir dibujando";
+                    break;
+                case "rotarPunto":
+                    //dibujador.rotarPuntoPoligono();
+                    //rotarPoligonoAnguloToolStripMenuItem_Click(sender, e);
+                    break;
+                default:
+                    if (puedeDibujar)
+                    {
+                        dibujador.añadirPunto();
+                        dibujador.pintar();
+                    }
+                    break;
+            }
+            efecto = "nada";
         }
 
         private void avisoBtn_Click(object sender, EventArgs e)
         {
             switch (efecto)
             {
-                case "rotar":
+                case "rotarMismoEje":
                     try
                     {
                         Double angulo = Convert.ToDouble(avisoTxt.Text.ToString());
-                        if (avisoCheck.Checked)
-                        {
-                            angulo = angulo * (-1);
-                        }
+                        angulo = avisoCheck.Checked == false ? angulo*(-1) : angulo;
+                        Refresh();
                         dibujador.rotarPoligono(angulo);
-                        Objeto obj = dibujador.objeto;
-                        nuevoToolStripMenuItem_Click(sender, e);
-                        dibujador.nuevoObjeto(
-                            dondeDibujar(),
-                            tamañoHDondeDibujar(),
-                            tamañoVDondeDibujar());
-                        dibujador.setObjeto(obj);
-                        dibujador.pintar();
-                        avisoTxt.Visible = false;
-                        avisoBtn.Visible = false;
-                        avisoCheck.Visible = false;
                         aviso.Text = "Poligono rotado, puede seguir dibujando";
-                        puedeDibujar = true;
                         efecto = "nada";
-                        }
-                        catch (FormatException es)
-                        {
-                            MessageBox.Show("DATO INCORRECTO");
-                        }
-                        catch (OverflowException ex)
-                        {
-                            MessageBox.Show("NUMERO DEMASIADO GRANDE");
-                        }
+                    }
+                    catch (FormatException es)
+                    {
+                        MessageBox.Show("DATO INCORRECTO");
+                    }
+                    catch (OverflowException ex)
+                    {
+                        MessageBox.Show("NUMERO DEMASIADO GRANDE");
+                    }
+                    break;
+                case "escalarOrigen":
+                    try
+                    {
+                        double escala = Convert.ToDouble(avisoTxt.Text);
+                        dibujador.escalarOrigen(escala);
+                        aviso.Text = "Poligono escalado, puede seguir dibujando";
+                        efecto = "nada";
+                    }
+                    catch (Exception ex)
+                    {
+                        aviso.Text = "DATO INCORRECTO";
+                    }
+                    break;
+                case "escalar":
+                    try
+                    {
+                        double escala = Convert.ToDouble(avisoTxt.Text);
+                        dibujador.escalar(escala);
+                        aviso.Text = "Poligono escalado, puede seguir dibujando";
+                        efecto = "nada";
+                    }
+                    catch (Exception ex)
+                    {
+                        aviso.Text = "DATO INCORRECTO";
+                    }
+                    break;
+                case "reflexionEje":
+                    if (avisoCheck.Checked)
+                    {
+                        dibujador.reflexion(new Punto(-1, 0, 1), new Punto(1, 0, 1));
+                    }
+                    else
+                    {
+                        dibujador.reflexion(new Punto(0, -1, 1), new Punto(0, 1, 1));
+                    }
+                    aviso.Text = "Poligono escalado, puede seguir dibujando";
+                    puedeDibujar = true;
+                    efecto = "nada";
                     break;
                 default:
                     break;
             }
+            Objeto obj = dibujador.objeto;
+            nuevoToolStripMenuItem_Click(sender, e);
+            dibujador.nuevoObjeto(
+                dondeDibujar(),
+                tamañoHDondeDibujar(),
+                    tamañoVDondeDibujar());
+                dibujador.setObjeto(obj);
+                dibujador.pintar();
+                modificarElementos(false, false, false, "", "", "");
+            puedeDibujar = true;
         }
 
-        private void rotarPoligonoAnguloPuntoToolStripMenuItem_Click(object sender, EventArgs e)
+        private void seleccionarPuntoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (dibujador.noEstaVacio())
+            if (esPosible())
             {
-                if (dibujador.poligonoTerminado)
-                {
-                    aviso.Text = "Seleccionar punto base para la rotacion";
-                    puedeDibujar = false;
-                    efecto = "rotarPunto";
-                }
-                else
-                {
-                    aviso.Text = "Debe terminar el poligono";
-                }
-            }
-            else
-            {
-                aviso.Text = "No puede rotar en base a un punto";
+                aviso.Text = "Seleccione donde trasladar";
+                efecto = "trasladar";
             }
         }
 
-        private void rotarPoligonoAnguloToolStripMenuItem_Click(object sender, EventArgs e)
+        private void puntoAleatorioToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (dibujador.noEstaVacio())
+            if (esPosible())
             {
-                if (dibujador.poligonoTerminado)
-                {
-                    aviso.Text = "Introducir grados a rotar :";
-                    avisoTxt.Location = new Point(
-                        aviso.Width + 1,
-                        menuStrip1.Height+menuStrip1.Location.Y);
-                    avisoTxt.Visible = true;
-                    avisoBtn.Location = new Point(
-                        avisoTxt.Width + avisoTxt.Location.X + 1,
-                        menuStrip1.Height + menuStrip1.Location.Y);
-                    avisoBtn.Text = "ROTAR";
-                    avisoBtn.Visible = true;
-                    avisoCheck.Location = new Point(
-                        avisoBtn.Width +avisoBtn.Location.X + 1,
-                        menuStrip1.Height + menuStrip1.Location.Y);
-                    avisoCheck.Text = "Sentido Horario";
-                    avisoCheck.Visible = true;
-                    efecto = "rotar";
-                }
-                else
-                {
-                    aviso.Text = "Debe terminar el poligono";
-                }
-            }
-            else
-            {
-                aviso.Text = "No puede rotar";
+                dibujador.trasladarAleatorioPoligono();
+                aviso.Text = "Poligono trasladado";
             }
         }
 
-        private void trasladarPoligonoToolStripMenuItem_Click(object sender, EventArgs e)
+        private void mismoEjeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (dibujador.noEstaVacio())
+            if (esPosible())
             {
-                if (dibujador.poligonoTerminado)
-                {
-                    aviso.Text="Seleccione donde trasladar";
-                    puedeDibujar = false;
-                    efecto = "trasladar";
-                }
-                else
-                {
-                    aviso.Text = "Debe terminar el poligono";
-                }
-            }
-            else
-            {
-                aviso.Text="No puede trasladar";
+                aviso.Text = "Introducir grados a rotar :";
+                modificarElementos(true, true, true, "", "ROTAR", "Sentido HORARIO");
+                efecto = "rotarMismoEje";
             }
         }
 
+        private void respectoAlOrigenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (esPosible())
+            {
+                aviso.Text = "Introducir grados a rotar :";
+                modificarElementos(true, true, true, "", "ROTAR", "Sentido HORARIO");
+                efecto = "rotarOrigen";
+            }
+        }
     }
 }
 

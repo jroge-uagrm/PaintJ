@@ -14,9 +14,7 @@ namespace PaintJ
         public Pen lapiz = new Pen(Color.Black);
         public Graphics papel;
         public Objeto objeto;
-        public Poligono poligono;
         public Punto puntoAnterior, punto;
-        public bool poligonoTerminado;
         public float x, y;
         public int a,b,H,V;
 
@@ -24,7 +22,6 @@ namespace PaintJ
         {
             this.H = nuevaH;
             this.V = nuevaY;
-            this.punto = null;
             this.puntoAnterior = null;
         }
 
@@ -34,22 +31,22 @@ namespace PaintJ
             this.H = nuevaH;
             this.V = nuevaY;
             this.objeto = new Objeto();
-            this.poligono = new Poligono();
-            punto = puntoAnterior = null;
+            puntoAnterior = null;
         }
 
-        public void pintarEje()
+        public void setObjeto(Objeto nuevoObjeto)
         {
-            papel.DrawLine(new Pen(Color.Red), H/2, 0, H/2, V);
-            papel.DrawLine(new Pen(Color.Red), 0, V/2, H, V/2);
+            this.objeto = nuevoObjeto;
+            puntoAnterior = this.objeto.ultimoPunto();
         }
 
         public void pintar()
         {
+            pintarEje();
             int cantidadPoligonos = objeto.listaDePoligonos.Count;
             for (int i = 1; i <= cantidadPoligonos; i++)
             {
-                poligono = objeto.listaDePoligonos.First();
+                Poligono poligono = objeto.listaDePoligonos.First();
                 objeto.listaDePoligonos.RemoveFirst();
                 objeto.listaDePoligonos.AddLast(poligono);
                 int cantidadPuntos = poligono.listaDePuntos.Count;
@@ -74,100 +71,46 @@ namespace PaintJ
             }
         }
 
+        public void pintarEje()
+        {
+            papel.DrawLine(new Pen(Color.Red), H / 2, 0, H / 2, V);
+            papel.DrawLine(new Pen(Color.Red), 0, V / 2, H, V / 2);
+        }
+
         public Punto puntoEnDescoordenadas(float x1, float y1)
         {
             x = x1;
             y = y1;
-            if (H > V)
-            {
-                a = (int)((float)((float)((float)(x / 2) + 50) * H) / 100);
-                b = (V / 2) - (int)((float)((float)(y / 2) * H) / 100);
-            }
-            else
-            {
-                //INSERTAR FORMULAS
-            }
-            return new Punto(a, b);
+            a = (int)((float)((float)((float)(x / 2) + 50) * H) / 100);
+            b = (int)((float)((float)((float)(y / 2) + 50) * V) / 100);
+            return new Punto(a, b, 1);
         }
 
-        public void dibujarLinea()
+        public void añadirPunto()
         {
-            if (poligonoTerminado)
-            {
-                poligono = new Poligono();
-                poligonoTerminado = false;
-
-            }
-                punto = new Punto(x,y);
-                if (puntoAnterior != null)
-                {
-                    descoordenadas(puntoAnterior.x, puntoAnterior.y);
-                    int x1 = a;
-                    int y1 = b;
-                    descoordenadas(punto.x, punto.y);
-                    int x2 = a;
-                    int y2 = b;
-                    papel.DrawLine(lapiz,
-                        x1,y1,
-                        x2,y2);
-                }
-                poligono.añadirPunto(punto);
-                puntoAnterior=punto;
-        }
-
-        public void setObjeto(Objeto nuevoObjeto)
-        {
-            poligonoTerminado = true;
-            this.objeto = nuevoObjeto;
+            objeto.añadirPunto(new Punto(x, y, 1));
         }
 
         public void terminarPoligono()
         {
-                poligono.setPuntoReferenciaEnCentro();
-                objeto.añadirPoligono(poligono);
-                poligonoTerminado = true;
-                punto = null;
-                puntoAnterior = null;
+            objeto.AñadirPuntoFinal(new Punto(x, y,1));
+            puntoAnterior = null;
         }
 
         public void coordenadas(int a1,int b1)
         {
             a = a1;
             b = b1;
-            if (H > V)
-            {
-                x = ((float)((float)(a * 100) / H) - 50) * 2;
-                y = (((float)((float)(V / 2) - b) * 100) / H) * 2;
-            } 
-            else
-            {
-                //INSERTAR FORMULAS
-            }
+            x = ((float)((float)(a * 100) / H) - 50) * 2;
+            y = ((float)((float)(b * 100) / V) - 50) * 2;
         }
 
         public void descoordenadas(float x1,float y1)
         {
             x = x1;
             y = y1;
-            if (H > V)
-            {
-                a = (int)((float)((float)((float)(x / 2) + 50) * H) / 100);
-                b = (V / 2) - (int)((float)((float)(y / 2) * H) / 100);
-            }
-            else
-            {
-                //INSERTAR FORMULAS
-            }
-        }
-
-        public bool isObjetoVacio()
-        {
-            return objeto.listaDePoligonos.Count==0;
-        }
-
-        public void trasladarPoligono()
-        {
-            poligono.trasladar(new Punto(x, y));
+            a = (int)((float)((float)((float)(x / 2) + 50) * H) / 100);
+            b = (int)((float)((float)((float)(y / 2) + 50) * V) / 100);
         }
 
         public bool noEstaVacio()
@@ -176,7 +119,7 @@ namespace PaintJ
             {
                 return false;
             }
-            else if(objeto.listaDePoligonos.Count == 0)
+            else if (objeto.listaDePoligonos.Count == 0)
             {
                 return false;
             }
@@ -186,15 +129,58 @@ namespace PaintJ
             }
         }
 
-        public void rotarPoligono(double angulo)
+        public void trasladarPoligono()
         {
-            poligono.rotar(angulo);
-            poligono.setPuntoReferenciaEnCentro();
+            objeto.trasladarPoligono(new Punto(x,y,1));
         }
 
-        public void rotarPuntoPoligono()
+        public void trasladarAleatorioPoligono()
         {
-            poligono.setPuntoReferencia(new Punto(x, y));
+    
+        }
+
+        public void rotarPoligono(double angulo)
+        {
+            objeto.rotar(angulo);
+        }
+
+        public void rotarPuntoPoligono(Punto punto,double angulo)
+        {
+            objeto.rotarPunto(punto,angulo);
+        }
+
+        public void rotarOrigenPoligono(double angulo)
+        {
+            objeto.rotarOrigen(angulo);
+        }
+
+        public bool borrarUltimaLinea()
+        {
+            if (noEstaVacio())
+            {
+                if (objeto.poligonoTerminado)
+                {
+                    objeto.borrarUltimoPunto();
+                }
+                objeto.borrarUltimoPunto();
+                return true;
+            }
+            return false;
+        }
+
+        public void escalarOrigen(double constante)
+        {
+            objeto.escalarOrigenPoligono((float)constante);
+        }
+
+        public void escalar(double constante)
+        {
+            objeto.escalarPoligono((float)constante);
+        }
+
+        public void reflexion(Punto a,Punto b)
+        {
+            objeto.reflexion(a, b);
         }
     }
 }

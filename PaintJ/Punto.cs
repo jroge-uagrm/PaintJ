@@ -9,14 +9,14 @@ namespace PaintJ
     [Serializable]
     class Punto
     {
-        public float x, y;
-        public Punto(float a,float b)
+        public float x, y, z;
+        public Punto(float a,float b,float c)
         {
-            this.x = a;this.y = b;
+            this.x = a;this.y = b;this.z = c;
         }
         public override string ToString()
         {
-            return "("+x.ToString() + " , " + y.ToString()+")";
+            return "("+x.ToString() + " , " + y.ToString()+" , "+z.ToString()+")";
         }
     }
 }
