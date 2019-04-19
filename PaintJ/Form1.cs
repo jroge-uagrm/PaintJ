@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using static System.Windows.Forms.CheckedListBox;
 
 namespace PaintJ
 {
@@ -40,6 +41,7 @@ namespace PaintJ
         {
             textBox1.Text = tamañoHDondeDibujar().ToString();
             textBox2.Text = tamañoVDondeDibujar().ToString();
+            areaDibujo.Height = Height - menuStrip1.Height - 45;
             dibujador = new Painter(
                 tamañoHDondeDibujar(),
                 tamañoVDondeDibujar());
@@ -53,18 +55,17 @@ namespace PaintJ
         private void Form1_SizeChanged(object sender, EventArgs e)
         {
             areaDibujo.Height = Height - menuStrip1.Height - 45;
-            areaDibujo.Refresh();
+            Refresh();
             Objeto obj = dibujador.objeto;
-            dibujador.nuevoObjeto(
+            if (dibujador.noEstaVacio())
+            {
+                dibujador.nuevoObjeto(
                     dondeDibujar(),
                     tamañoHDondeDibujar(),
                     tamañoVDondeDibujar());
-            dibujador.setObjeto(obj);
-            if (dibujador.noEstaVacio())
-            {
+                dibujador.setObjeto(obj);
                 dibujador.pintar();
             }
-            dibujador.pintarEje();
         }
 
         private void Form1_ResizeEnd(object sender, EventArgs e)
@@ -83,11 +84,11 @@ namespace PaintJ
 
         private void areaDibujo_MouseMove(object sender, MouseEventArgs e)
         {
-            textBox3.Text = e.X.ToString();
-            textBox4.Text = e.Y.ToString();
             dibujador.coordenadas(e.X, e.Y);
             textBox5.Text = dibujador.x.ToString();
             textBox6.Text = dibujador.y.ToString();
+            textBox3.Text = dibujador.a.ToString();
+            textBox4.Text = dibujador.b.ToString();
         }
 
         private void areaDibujo_MouseClick(object sender, MouseEventArgs e)
@@ -114,7 +115,7 @@ namespace PaintJ
 
         private void abrirToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            String resultado="";
+            String resultado = "";
             try
             {
                 using (System.Windows.Forms.OpenFileDialog dialogo =
@@ -130,10 +131,10 @@ namespace PaintJ
                                 Serialization.Formatters.
                                 Binary.BinaryFormatter();
                             Objeto obj = (Objeto)binfor.Deserialize(st);
+                            Refresh();
                             nuevoToolStripMenuItem_Click(sender, e);
                             dibujador.setObjeto(obj);
                             dibujador.pintar();
-                            dibujador.pintarEje();
                             resultado = "ABIERTO CORRECTAMENTE";
                         }
                     }
@@ -145,7 +146,7 @@ namespace PaintJ
             }
             catch (Exception ex)
             {
-                resultado = "ERROR AL ABRIR EL ARCHIVO";
+                resultado = "ERROR AL ABRIR EL ARCHIVO : "+ex.Message;
             }
             finally
             {
@@ -160,7 +161,6 @@ namespace PaintJ
             {
                 if (dibujador.noEstaVacio())
                 {
-                    dibujador.terminarPoligono();
                     using (System.Windows.Forms.SaveFileDialog dialogo =
                     new System.Windows.Forms.SaveFileDialog())
                     {
@@ -190,7 +190,7 @@ namespace PaintJ
             }
             catch (Exception ex)
             {
-                resultado = "ERROR AL GUARDAR EL ARCHIVO";
+                resultado = "ERROR AL GUARDAR EL ARCHIVO : "+ex.Message;
             }
             finally
             {
@@ -219,6 +219,7 @@ namespace PaintJ
             avisoCheck.Visible = c;
             if (c) { avisoCheck.BringToFront(); } else { avisoCheck.SendToBack(); }
             avisoCheck.Text = c1;
+            avisoCheck.Checked = false;
             avisoCheck.Location = new Point(
                 avisoBtn.Width + avisoBtn.Location.X + 1,
                 menuStrip1.Height + menuStrip1.Location.Y);
@@ -244,106 +245,122 @@ namespace PaintJ
             return false;
         }
 
+        private void borrarLineaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (dibujador.borrarUltimoPunto())
+            {
+                Refresh();
+                dibujador.pintar();
+            }
+        }
+
+        private void avisoCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            switch (efecto)
+            {
+                case "escalarOrigen":
+                    if (avisoCheck.Checked)
+                    {
+                        avisoCheck.Text = "Veces mas Pequeño";
+                    }
+                    else
+                    {
+                        avisoCheck.Text = "Veces mas Grande";
+                    }
+                    break;
+                case "escalarEje":
+                    if (avisoCheck.Checked)
+                    {
+                        avisoCheck.Text = "Veces mas Pequeño";
+                    }
+                    else
+                    {
+                        avisoCheck.Text = "Veces mas Grande";
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
         private void Form1_MouseClick(object sender, MouseEventArgs e)
         {
             Refresh();
             switch (efecto)
             {
                 case "trasladar":
-                    dibujador.trasladarPoligono();
-                    dibujador.pintar();
+                    dibujador.trasladarPoligono(
+                        new Punto(dibujador.x, dibujador.y, 1));
                     aviso.Text = "Poligono trasladado, puede seguir dibujando";
                     break;
                 case "rotarPunto":
-                    //dibujador.rotarPuntoPoligono();
-                    //rotarPoligonoAnguloToolStripMenuItem_Click(sender, e);
+                    dibujador.setPuntoParaRotarPunto(new Punto(
+                        dibujador.x,dibujador.y,1));
                     break;
                 default:
                     if (puedeDibujar)
                     {
                         dibujador.añadirPunto();
-                        dibujador.pintar();
                     }
                     break;
             }
-            efecto = "nada";
+            if (dibujador.noEstaVacio())
+            {
+                dibujador.pintar();
+            }
+            if (efecto.CompareTo("rotarPunto") == 0)
+            {
+                aviso.Text = "Introducir grados a rotar :";
+                modificarElementos(true, true, true, "", "ROTAR", "Sentido HORARIO");
+            }
+            else
+            {
+                efecto = "nada";
+                modificarElementos(false, false, false, "", "", "");
+            }
+            
         }
 
         private void avisoBtn_Click(object sender, EventArgs e)
         {
-            switch (efecto)
+            Refresh();
+            try
             {
-                case "rotarMismoEje":
-                    try
-                    {
-                        Double angulo = Convert.ToDouble(avisoTxt.Text.ToString());
-                        angulo = avisoCheck.Checked == false ? angulo*(-1) : angulo;
-                        Refresh();
-                        dibujador.rotarPoligono(angulo);
+                double numero = Convert.ToDouble(avisoTxt.Text.ToString());
+                numero = avisoCheck.Checked ? numero * (-1) : numero;
+                switch (efecto)
+                {
+                    case "rotarMismoEje":
+                        dibujador.rotarEje(numero);
                         aviso.Text = "Poligono rotado, puede seguir dibujando";
-                        efecto = "nada";
-                    }
-                    catch (FormatException es)
-                    {
-                        MessageBox.Show("DATO INCORRECTO");
-                    }
-                    catch (OverflowException ex)
-                    {
-                        MessageBox.Show("NUMERO DEMASIADO GRANDE");
-                    }
-                    break;
-                case "escalarOrigen":
-                    try
-                    {
-                        double escala = Convert.ToDouble(avisoTxt.Text);
-                        dibujador.escalarOrigen(escala);
+                        break;
+                    case "rotarOrigen":
+                        dibujador.rotarOrigenPoligono(numero);
+                        aviso.Text = "Poligono rotado, puede seguir dibujando";
+                        break;
+                    case "rotarPunto":
+                        dibujador.rotarPunto(numero);
+                        aviso.Text = "Poligono rotado, puede seguir dibujando";
+                        break;
+                    case "escalarEje":
+                        dibujador.escalarEje(numero);
                         aviso.Text = "Poligono escalado, puede seguir dibujando";
-                        efecto = "nada";
-                    }
-                    catch (Exception ex)
-                    {
-                        aviso.Text = "DATO INCORRECTO";
-                    }
-                    break;
-                case "escalar":
-                    try
-                    {
-                        double escala = Convert.ToDouble(avisoTxt.Text);
-                        dibujador.escalar(escala);
+                        break;
+                    case "escalarOrigen":
+                        dibujador.escalarOrigen(numero);
                         aviso.Text = "Poligono escalado, puede seguir dibujando";
-                        efecto = "nada";
-                    }
-                    catch (Exception ex)
-                    {
-                        aviso.Text = "DATO INCORRECTO";
-                    }
-                    break;
-                case "reflexionEje":
-                    if (avisoCheck.Checked)
-                    {
-                        dibujador.reflexion(new Punto(-1, 0, 1), new Punto(1, 0, 1));
-                    }
-                    else
-                    {
-                        dibujador.reflexion(new Punto(0, -1, 1), new Punto(0, 1, 1));
-                    }
-                    aviso.Text = "Poligono escalado, puede seguir dibujando";
-                    puedeDibujar = true;
-                    efecto = "nada";
-                    break;
-                default:
-                    break;
-            }
-            Objeto obj = dibujador.objeto;
-            nuevoToolStripMenuItem_Click(sender, e);
-            dibujador.nuevoObjeto(
-                dondeDibujar(),
-                tamañoHDondeDibujar(),
-                    tamañoVDondeDibujar());
-                dibujador.setObjeto(obj);
+                        break;
+                    default:
+                        break;
+                }
                 dibujador.pintar();
                 modificarElementos(false, false, false, "", "", "");
-            puedeDibujar = true;
+                efecto = "nada";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("ERROR : "+ex.Message);
+            }
         }
 
         private void seleccionarPuntoToolStripMenuItem_Click(object sender, EventArgs e)
@@ -352,6 +369,7 @@ namespace PaintJ
             {
                 aviso.Text = "Seleccione donde trasladar";
                 efecto = "trasladar";
+                modificarElementos(false, false, false, "", "", "");
             }
         }
 
@@ -359,8 +377,11 @@ namespace PaintJ
         {
             if (esPosible())
             {
+                Refresh();
                 dibujador.trasladarAleatorioPoligono();
+                dibujador.pintar();
                 aviso.Text = "Poligono trasladado";
+                modificarElementos(false, false, false, "", "", "");
             }
         }
 
@@ -383,6 +404,61 @@ namespace PaintJ
                 efecto = "rotarOrigen";
             }
         }
+
+        private void respectoAUnPuntoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (esPosible())
+            {
+                aviso.Text = "Seleccionar punto base :";
+                efecto = "rotarPunto";
+                modificarElementos(false, false, false, "", "", "");
+            }
+        }
+
+        private void origenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (esPosible())
+            {
+                efecto = "escalarEje";
+                aviso.Text = "Introducir una constante :";
+                modificarElementos(true, true, true, "", "ESCALAR", "Veces mas Grande");
+            }
+        }
+
+        private void origenToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (esPosible())
+            {
+                aviso.Text = "Introducir una constante :";
+                efecto = "escalarOrigen";
+                modificarElementos(true, true, true, "", "ESCALAR", "Veces mas Grande");
+            }
+        }
+
+        private void ejeXToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (esPosible())
+            {
+                dibujador.reflexionX();
+                Refresh();
+                dibujador.pintar();
+                aviso.Text = "Reflexion en X completa, puede seguir dibujando";
+                modificarElementos(false, false, false, "", "", "");
+            }
+        }
+
+        private void ejeYToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (esPosible())
+            {
+                dibujador.reflexionY();
+                Refresh();
+                dibujador.pintar();
+                aviso.Text = "Reflexion en Y completa, puede seguir dibujando";
+                modificarElementos(false, false, false, "", "", "");
+            }
+        }
+
     }
 }
 

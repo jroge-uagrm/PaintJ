@@ -9,40 +9,33 @@ using System.Windows.Forms;
 
 namespace PaintJ
 {
-    class Painter
+    public class Painter
     {
         public Pen lapiz = new Pen(Color.Black);
         public Graphics papel;
         public Objeto objeto;
-        public Punto puntoAnterior, punto;
         public float x, y;
         public int a,b,H,V;
 
-        public Painter(int nuevaH,int nuevaY)
+        public Painter(int nuevaH, int nuevaY)
         {
-            this.H = nuevaH;
-            this.V = nuevaY;
-            this.puntoAnterior = null;
+            H = nuevaH;V = nuevaY;
         }
 
         public void nuevoObjeto(Graphics nuevoPapel,int nuevaH,int nuevaY)
         {
-            this.papel = nuevoPapel;
-            this.H = nuevaH;
-            this.V = nuevaY;
-            this.objeto = new Objeto();
-            puntoAnterior = null;
+            papel = nuevoPapel;
+            H = nuevaH;
+            V = nuevaY;
+            objeto = new Objeto();
         }
 
-        public void setObjeto(Objeto nuevoObjeto)
-        {
-            this.objeto = nuevoObjeto;
-            puntoAnterior = this.objeto.ultimoPunto();
-        }
+        public void setObjeto(Objeto nuevoObjeto) => objeto = nuevoObjeto;
 
         public void pintar()
         {
             pintarEje();
+            Punto punto, puntoAnterior;
             int cantidadPoligonos = objeto.listaDePoligonos.Count;
             for (int i = 1; i <= cantidadPoligonos; i++)
             {
@@ -77,110 +70,80 @@ namespace PaintJ
             papel.DrawLine(new Pen(Color.Red), 0, V / 2, H, V / 2);
         }
 
-        public Punto puntoEnDescoordenadas(float x1, float y1)
+        public Punto puntoEnDescoordenadas(float xa, float yb)
         {
-            x = x1;
-            y = y1;
-            a = (int)((float)((float)((float)(x / 2) + 50) * H) / 100);
-            b = (int)((float)((float)((float)(y / 2) + 50) * V) / 100);
-            return new Punto(a, b, 1);
+            int ax = (int)((float)((float)((float)(xa / 2) + 50) * H) / 100);
+            int by = (int)((float)((float)((float)(yb / -2) + 50) * V) / 100);
+            return new Punto(ax, by, 1);
         }
 
-        public void añadirPunto()
+        public Punto puntoEnCoordenadas(int ax, int by)
         {
-            objeto.añadirPunto(new Punto(x, y, 1));
+            float xa = (int)((float)((float)((float)(ax / 2) + 50) * H) / 100);
+            float yb = (int)((float)((float)((float)(by / -2) + 50) * V) / 100);
+            return new Punto(xa, yb, 1);
         }
 
-        public void terminarPoligono()
-        {
-            objeto.AñadirPuntoFinal(new Punto(x, y,1));
-            puntoAnterior = null;
-        }
+        public void añadirPunto() => objeto.añadirPunto(new Punto(x, y, 1));
+
+        public void terminarPoligono() => objeto.terminarPoligono();
 
         public void coordenadas(int a1,int b1)
         {
             a = a1;
             b = b1;
-            x = ((float)((float)(a * 100) / H) - 50) * 2;
-            y = ((float)((float)(b * 100) / V) - 50) * 2;
+            x = (((float)(a * 100) / H) - 50) * 2;
+            y = ((float)(b * 100) / V - 50) * -2;
         }
 
         public void descoordenadas(float x1,float y1)
         {
             x = x1;
             y = y1;
-            a = (int)((float)((float)((float)(x / 2) + 50) * H) / 100);
-            b = (int)((float)((float)((float)(y / 2) + 50) * V) / 100);
+            float aux = ((x / 2) + 50) * H / 100;
+            a = (int)aux;
+            aux = ((y / -2) + 50) * V / 100;
+            b = (int)aux;
         }
 
-        public bool noEstaVacio()
-        {
-            if (objeto == null)
-            {
-                return false;
-            }
-            else if (objeto.listaDePoligonos.Count == 0)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
+        public bool noEstaVacio() => objeto == null ? false : objeto.listaDePoligonos.Count == 0 ? false : true;
 
-        public void trasladarPoligono()
-        {
-            objeto.trasladarPoligono(new Punto(x,y,1));
-        }
+        public int cantidadDePoligonos() => objeto.listaDePoligonos.Count;
+
+        public void trasladarPoligono(Punto puntoATrasladar) => objeto.trasladarPoligono(puntoATrasladar);
 
         public void trasladarAleatorioPoligono()
         {
-    
+            Random rnd = new Random();
+            objeto.trasladarPoligono(new Punto(
+                (float)rnd.Next(-100,100), (float)rnd.Next(-100, 100),1));
         }
 
-        public void rotarPoligono(double angulo)
-        {
-            objeto.rotar(angulo);
-        }
+        public void rotarEje(double angulo) => objeto.rotarEje(angulo);
 
-        public void rotarPuntoPoligono(Punto punto,double angulo)
-        {
-            objeto.rotarPunto(punto,angulo);
-        }
+        public void rotarOrigenPoligono(double angulo) => objeto.rotarOrigen(angulo);
 
-        public void rotarOrigenPoligono(double angulo)
-        {
-            objeto.rotarOrigen(angulo);
-        }
+        public void setPuntoParaRotarPunto(Punto punto)=> objeto.setPuntoParaRotarPunto(punto);
 
-        public bool borrarUltimaLinea()
+        public void rotarPunto(double angulo) => objeto.rotarPunto(angulo);
+
+        public bool borrarUltimoPunto()
         {
             if (noEstaVacio())
             {
-                if (objeto.poligonoTerminado)
-                {
-                    objeto.borrarUltimoPunto();
-                }
                 objeto.borrarUltimoPunto();
                 return true;
             }
             return false;
         }
 
-        public void escalarOrigen(double constante)
-        {
-            objeto.escalarOrigenPoligono((float)constante);
-        }
+        public void escalarEje(double constante) => objeto.escalarEje((float)constante);
 
-        public void escalar(double constante)
-        {
-            objeto.escalarPoligono((float)constante);
-        }
+        public void escalarOrigen(double constante) => objeto.escalarOrigen((float)constante);
 
-        public void reflexion(Punto a,Punto b)
-        {
-            objeto.reflexion(a, b);
-        }
+        public void reflexionX() => objeto.reflexionX();
+
+        public void reflexionY() => objeto.reflexionY();
+        //Se cambio en coordenadas
     }
 }

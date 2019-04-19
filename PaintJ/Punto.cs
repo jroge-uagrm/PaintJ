@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace PaintJ
 {
     [Serializable]
-    class Punto
+    public class Punto
     {
         public float x, y, z;
         public Punto(float a,float b,float c)

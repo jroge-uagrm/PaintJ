@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace PaintJ
 {
     [Serializable]
-    class Objeto
+    public class Objeto
     {
         public LinkedList<Poligono> listaDePoligonos;
         public bool poligonoTerminado;
@@ -18,19 +18,15 @@ namespace PaintJ
             poligonoTerminado=true;
         }
 
-        public void añadirPoligono(Poligono poligono)
-        {
-            poligono.setPuntoReferenciaEnCentro();
-            listaDePoligonos.AddLast(poligono);
-            poligonoTerminado = false;
-        }
+        public void añadirPoligono(Poligono poligono) => listaDePoligonos.AddLast(poligono);
 
         public void añadirPunto(Punto punto)
         {
             if (poligonoTerminado)
             {
-                this.añadirPoligono(new Poligono());
-                this.añadirPunto(punto);
+                añadirPoligono(new Poligono());
+                poligonoTerminado = false;
+                añadirPunto(punto);
             }
             else
             {
@@ -38,71 +34,88 @@ namespace PaintJ
             }
         }
 
-        public void AñadirPuntoFinal(Punto punto)
+        public void terminarPoligono()
         {
-            this.añadirPunto(punto);
             poligonoTerminado = true;
+            Poligono pol = listaDePoligonos.Last();
+            pol.setNombre("poligono" + listaDePoligonos.Count.ToString());
         }
 
-        public Punto ultimoPunto()
-        {
-            return poligonoTerminado ? null :
-                listaDePoligonos.Last().
-                    listaDePuntos.Last();
-        }
+        public Punto ultimoPunto() => poligonoTerminado ? null : listaDePoligonos.Last().listaDePuntos.Last();
 
         public void trasladarPoligono(Punto punto)
         {
-            listaDePoligonos.Last().trasladar(punto);
+            Poligono pol = listaDePoligonos.Last();
+            pol.trasladar(punto);
         }
 
-        public void rotar(double angulo)
+        public void rotarEje(double angulo)
         {
-            listaDePoligonos.Last().setPuntoReferenciaEnCentro();
-            listaDePoligonos.Last().rotar(angulo);
+            Poligono pol = listaDePoligonos.Last();
+            pol.setPuntoReferenciaEnCentro();
+            pol.rotar(angulo);
         }
 
-        public void rotarPunto(Punto punto,double angulo)
+        public void setPuntoParaRotarPunto(Punto punto)
         {
-            listaDePoligonos.Last().setPuntoReferencia(punto);
-            listaDePoligonos.Last().rotar(angulo);
+            Poligono pol = listaDePoligonos.Last();
+            pol.setPuntoReferencia(punto);
+        }
+
+        public void rotarPunto(double angulo)
+        {
+            Poligono pol = listaDePoligonos.Last();
+            pol.rotar(angulo);
         }
 
         public void rotarOrigen(double angulo)
         {
-            listaDePoligonos.Last().setPuntoReferenciaEnOrigen();
-            listaDePoligonos.Last().rotar(angulo);
+            Poligono pol = listaDePoligonos.Last();
+            pol.setPuntoReferenciaEnOrigen();
+            pol.rotar(angulo);
         }
 
         public void borrarUltimoPunto()
         {
-            listaDePoligonos.Last().listaDePuntos.RemoveLast();
-            if (poligonoTerminado)
+            if (listaDePoligonos.Count > 0)
             {
-                poligonoTerminado = false;
+                listaDePoligonos.Last().borrarUltimoPunto();
+                if (listaDePoligonos.Last().listaDePuntos.Count <= 1)
+                {
+                    listaDePoligonos.RemoveLast();
+                    poligonoTerminado = true;
+                }
+                else
+                {
+                    poligonoTerminado = false;
+                }
             }
-            if (listaDePoligonos.Last().listaDePuntos.Count == 0)
-            {
-                listaDePoligonos.RemoveLast();
-                poligonoTerminado = true;
-            }
         }
 
-        public void escalarOrigenPoligono(float constante)
+        public void escalarEje(float constante)
         {
-            listaDePoligonos.Last().setPuntoReferenciaEnOrigen();
-            listaDePoligonos.Last().escalar(constante);
+            Poligono pol = listaDePoligonos.Last();
+            pol.setPuntoReferenciaEnCentro();
+            pol.escalar(constante);
         }
 
-        public void escalarPoligono(float constante)
+        public void escalarOrigen(float constante)
         {
-            listaDePoligonos.Last().setPuntoReferenciaEnCentro();
-            listaDePoligonos.Last().escalar(constante);
+            Poligono pol = listaDePoligonos.Last();
+            pol.setPuntoReferenciaEnOrigen();
+            pol.escalar(constante);
         }
 
-        public void reflexion(Punto a,Punto b)
+        public void reflexionX()
         {
+            Poligono pol = listaDePoligonos.Last();
+            pol.reflexion(true);
+        }
 
+        public void reflexionY()
+        {
+            Poligono pol = listaDePoligonos.Last();
+            pol.reflexion(false);
         }
     }
 }
