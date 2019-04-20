@@ -361,7 +361,7 @@ namespace PaintJ
                         break;
                     case "reflexionRecta":
                         bool fr=dibujador.puntoReflexionRecta(true);
-                        //aviso.Text = "Reflexion completa, puede seguir dibujando";
+                        aviso.Text = "Reflexion completa, puede seguir dibujando";
                         break;
                     default:
                         break;

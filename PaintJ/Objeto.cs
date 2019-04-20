@@ -20,7 +20,11 @@ namespace PaintJ
 
         public void añadirPoligono(Poligono poligono) => listaDePoligonos.AddLast(poligono);
 
-        public void eliminarPoligono() => listaDePoligonos.RemoveLast();
+        public void eliminarPoligono()
+        {
+            listaDePoligonos.RemoveLast();
+            poligonoTerminado = true;
+        }
 
         public void añadirPunto(Punto punto)
         {
