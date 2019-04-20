@@ -128,13 +128,56 @@ namespace PaintJ
         }
 
         public void reflexion(bool xy)
-        {
+        {//true para reflexion en X
             matriz[0][0] =  xy ? 1 : -1;
             matriz[1][1] = matriz[0][0] * (-1);
             aplicarCambios();
         }
+
+        public void reflexionRecta(Poligono recta)
+        {
+            float x1 = recta.listaDePuntos.First().x;
+            float y1 = recta.listaDePuntos.First().y;
+            float x2 = recta.listaDePuntos.Last().x;
+            float y2 = recta.listaDePuntos.Last().y;
+            setPuntoReferenciaEnCentro();
+            float xc = puntoReferencia.x;
+            float yc = puntoReferencia.y;
+            float m = (y2 - y1) / (x2 - x1);
+            float m2 = (-1) / m;
+            float a = m2;
+            float b = (m2 * xc) - yc;
+            float c = m;
+            float d = (m * x1) - y1;
+            float x = (b - d) / (a - c);
+            float y = (((a * b) - (a * d)) / (a - c)) - b;
+            Punto punto, nuevoPunto;
+            for (int i = 1; i <= listaDePuntos.Count; i++)
+            {
+                punto = listaDePuntos.First();
+                listaDePuntos.RemoveFirst();
+                nuevoPunto = new Punto(
+                    punto.x - (2 * (punto.x - x)),//punto.x - x,
+                    punto.y - (2 * (punto.y - y)),//punto.y - y,
+                    1);
+                listaDePuntos.AddLast(nuevoPunto);
+            }
+            /*reflexion(true);
+            setPuntoReferenciaEnCentro();
+            for (int i = 1; i <= listaDePuntos.Count; i++)
+            {
+                punto = listaDePuntos.First();
+                listaDePuntos.RemoveFirst();
+                nuevoPunto = new Punto(
+                    punto.x + x,
+                    punto.y + y,
+                    1);
+                listaDePuntos.AddLast(nuevoPunto);
+            }*/
+        }
     }
 }
+
 
 
 

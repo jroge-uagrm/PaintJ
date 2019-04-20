@@ -47,6 +47,7 @@
             this.reflexionToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.ejeXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ejeYToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cualquierRectaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.borrarLineaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -62,7 +63,6 @@
             this.avisoTxt = new System.Windows.Forms.TextBox();
             this.avisoBtn = new System.Windows.Forms.Button();
             this.avisoCheck = new System.Windows.Forms.CheckBox();
-            this.menu = new System.Windows.Forms.ComboBox();
             this.poligonoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.areaDibujo)).BeginInit();
@@ -121,7 +121,7 @@
             this.seleccionarPuntoToolStripMenuItem,
             this.puntoAleatorioToolStripMenuItem});
             this.traslacionToolStripMenuItem.Name = "traslacionToolStripMenuItem";
-            this.traslacionToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.traslacionToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.traslacionToolStripMenuItem.Text = "Traslacion";
             // 
             // seleccionarPuntoToolStripMenuItem
@@ -145,7 +145,7 @@
             this.respectoAlOrigenToolStripMenuItem,
             this.respectoAUnPuntoToolStripMenuItem});
             this.rotacionToolStripMenuItem.Name = "rotacionToolStripMenuItem";
-            this.rotacionToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.rotacionToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.rotacionToolStripMenuItem.Text = "Rotacion";
             // 
             // mismoEjeToolStripMenuItem
@@ -175,20 +175,20 @@
             this.origenToolStripMenuItem,
             this.origenToolStripMenuItem1});
             this.reflexionToolStripMenuItem.Name = "reflexionToolStripMenuItem";
-            this.reflexionToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.reflexionToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.reflexionToolStripMenuItem.Text = "Escalacion";
             // 
             // origenToolStripMenuItem
             // 
             this.origenToolStripMenuItem.Name = "origenToolStripMenuItem";
-            this.origenToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.origenToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.origenToolStripMenuItem.Text = "Mismo Eje";
             this.origenToolStripMenuItem.Click += new System.EventHandler(this.origenToolStripMenuItem_Click);
             // 
             // origenToolStripMenuItem1
             // 
             this.origenToolStripMenuItem1.Name = "origenToolStripMenuItem1";
-            this.origenToolStripMenuItem1.Size = new System.Drawing.Size(129, 22);
+            this.origenToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.origenToolStripMenuItem1.Text = "Origen";
             this.origenToolStripMenuItem1.Click += new System.EventHandler(this.origenToolStripMenuItem1_Click);
             // 
@@ -196,29 +196,37 @@
             // 
             this.reflexionToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ejeXToolStripMenuItem,
-            this.ejeYToolStripMenuItem});
+            this.ejeYToolStripMenuItem,
+            this.cualquierRectaToolStripMenuItem});
             this.reflexionToolStripMenuItem1.Name = "reflexionToolStripMenuItem1";
-            this.reflexionToolStripMenuItem1.Size = new System.Drawing.Size(137, 22);
+            this.reflexionToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.reflexionToolStripMenuItem1.Text = "Reflexion";
             // 
             // ejeXToolStripMenuItem
             // 
             this.ejeXToolStripMenuItem.Name = "ejeXToolStripMenuItem";
-            this.ejeXToolStripMenuItem.Size = new System.Drawing.Size(99, 22);
+            this.ejeXToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
             this.ejeXToolStripMenuItem.Text = "Eje X";
             this.ejeXToolStripMenuItem.Click += new System.EventHandler(this.ejeXToolStripMenuItem_Click);
             // 
             // ejeYToolStripMenuItem
             // 
             this.ejeYToolStripMenuItem.Name = "ejeYToolStripMenuItem";
-            this.ejeYToolStripMenuItem.Size = new System.Drawing.Size(99, 22);
+            this.ejeYToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
             this.ejeYToolStripMenuItem.Text = "Eje Y";
             this.ejeYToolStripMenuItem.Click += new System.EventHandler(this.ejeYToolStripMenuItem_Click);
+            // 
+            // cualquierRectaToolStripMenuItem
+            // 
+            this.cualquierRectaToolStripMenuItem.Name = "cualquierRectaToolStripMenuItem";
+            this.cualquierRectaToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.cualquierRectaToolStripMenuItem.Text = "Cualquier Recta";
+            this.cualquierRectaToolStripMenuItem.Click += new System.EventHandler(this.cualquierRectaToolStripMenuItem_Click);
             // 
             // borrarLineaToolStripMenuItem
             // 
             this.borrarLineaToolStripMenuItem.Name = "borrarLineaToolStripMenuItem";
-            this.borrarLineaToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.borrarLineaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.borrarLineaToolStripMenuItem.Text = "Borrar Linea";
             this.borrarLineaToolStripMenuItem.Click += new System.EventHandler(this.borrarLineaToolStripMenuItem_Click);
             // 
@@ -349,15 +357,6 @@
             this.avisoCheck.UseVisualStyleBackColor = true;
             this.avisoCheck.CheckedChanged += new System.EventHandler(this.avisoCheck_CheckedChanged);
             // 
-            // menu
-            // 
-            this.menu.DataSource = this.poligonoBindingSource;
-            this.menu.FormattingEnabled = true;
-            this.menu.Location = new System.Drawing.Point(12, 53);
-            this.menu.Name = "menu";
-            this.menu.Size = new System.Drawing.Size(149, 21);
-            this.menu.TabIndex = 37;
-            // 
             // poligonoBindingSource
             // 
             this.poligonoBindingSource.DataSource = typeof(PaintJ.Poligono);
@@ -367,7 +366,6 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(684, 686);
-            this.Controls.Add(this.menu);
             this.Controls.Add(this.avisoTxt);
             this.Controls.Add(this.aviso);
             this.Controls.Add(this.textBox6);
@@ -433,8 +431,8 @@
         private System.Windows.Forms.ToolStripMenuItem ejeXToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ejeYToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem borrarLineaToolStripMenuItem;
-        private System.Windows.Forms.ComboBox menu;
         private System.Windows.Forms.BindingSource poligonoBindingSource;
+        private System.Windows.Forms.ToolStripMenuItem cualquierRectaToolStripMenuItem;
     }
 }
 

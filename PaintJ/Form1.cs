@@ -297,8 +297,15 @@ namespace PaintJ
                     dibujador.setPuntoParaRotarPunto(new Punto(
                         dibujador.x,dibujador.y,1));
                     break;
+                case "reflexionRecta":
+                    if (dibujador.puntoReflexionRecta(false))
+                    {
+                        modificarElementos(false, true, false, "1", "REFLEXION", "");
+                    }
+                    dibujador.pintar();
+                    break;
                 default:
-                    if (puedeDibujar)
+                    if (puedeDibujar && efecto.CompareTo("nada")==0)
                     {
                         dibujador.añadirPunto();
                     }
@@ -312,13 +319,11 @@ namespace PaintJ
             {
                 aviso.Text = "Introducir grados a rotar :";
                 modificarElementos(true, true, true, "", "ROTAR", "Sentido HORARIO");
-            }
-            else
+            }else if(efecto.CompareTo("reflexionRecta") != 0)
             {
                 efecto = "nada";
                 modificarElementos(false, false, false, "", "", "");
-            }
-            
+            }   
         }
 
         private void avisoBtn_Click(object sender, EventArgs e)
@@ -327,28 +332,36 @@ namespace PaintJ
             try
             {
                 double numero = Convert.ToDouble(avisoTxt.Text.ToString());
-                numero = avisoCheck.Checked ? numero * (-1) : numero;
                 switch (efecto)
                 {
                     case "rotarMismoEje":
+                        numero = avisoCheck.Checked ? numero * (-1) : numero;
                         dibujador.rotarEje(numero);
                         aviso.Text = "Poligono rotado, puede seguir dibujando";
                         break;
                     case "rotarOrigen":
+                        numero = avisoCheck.Checked ? numero * (-1) : numero;
                         dibujador.rotarOrigenPoligono(numero);
                         aviso.Text = "Poligono rotado, puede seguir dibujando";
                         break;
                     case "rotarPunto":
+                        numero = avisoCheck.Checked ? numero * (-1) : numero;
                         dibujador.rotarPunto(numero);
                         aviso.Text = "Poligono rotado, puede seguir dibujando";
                         break;
                     case "escalarEje":
+                        numero = avisoCheck.Checked ? 1 / numero : numero;
                         dibujador.escalarEje(numero);
                         aviso.Text = "Poligono escalado, puede seguir dibujando";
                         break;
                     case "escalarOrigen":
+                        numero = avisoCheck.Checked ? 1 / numero : numero;
                         dibujador.escalarOrigen(numero);
                         aviso.Text = "Poligono escalado, puede seguir dibujando";
+                        break;
+                    case "reflexionRecta":
+                        bool fr=dibujador.puntoReflexionRecta(true);
+                        //aviso.Text = "Reflexion completa, puede seguir dibujando";
                         break;
                     default:
                         break;
@@ -459,6 +472,15 @@ namespace PaintJ
             }
         }
 
+        private void cualquierRectaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (esPosible())
+            {
+                aviso.Text = "Dibuje la recta";
+                efecto = "reflexionRecta";
+                modificarElementos(false, false, false, "", "", "");
+            }
+        }
     }
 }
 

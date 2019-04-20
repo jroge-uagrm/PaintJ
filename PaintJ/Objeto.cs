@@ -20,6 +20,8 @@ namespace PaintJ
 
         public void añadirPoligono(Poligono poligono) => listaDePoligonos.AddLast(poligono);
 
+        public void eliminarPoligono() => listaDePoligonos.RemoveLast();
+
         public void añadirPunto(Punto punto)
         {
             if (poligonoTerminado)
@@ -88,6 +90,7 @@ namespace PaintJ
                 else
                 {
                     poligonoTerminado = false;
+                    listaDePoligonos.Last().setNombre("nombre");
                 }
             }
         }
@@ -116,6 +119,12 @@ namespace PaintJ
         {
             Poligono pol = listaDePoligonos.Last();
             pol.reflexion(false);
+        }
+
+        public void reflexionRecta(Poligono recta)
+        {
+            Poligono pol = listaDePoligonos.Last();
+            pol.reflexionRecta(recta);
         }
     }
 }

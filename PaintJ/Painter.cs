@@ -145,5 +145,27 @@ namespace PaintJ
 
         public void reflexionY() => objeto.reflexionY();
         //Se cambio en coordenadas
+        public bool puntoReflexionRecta(bool ya)
+        {
+            objeto.añadirPunto(new Punto(x, y, 1));
+            if (objeto.listaDePoligonos.Last().listaDePuntos.Count <= 2 || ya)
+            {
+                if (ya)
+                {
+                    borrarUltimoPunto();
+                    Poligono recta = objeto.listaDePoligonos.Last();
+                    objeto.eliminarPoligono();
+                    objeto.reflexionRecta(recta);
+                    return true;
+                }
+                return objeto.listaDePoligonos.Last().listaDePuntos.Count == 2;
+            }
+            else
+            {
+                borrarUltimoPunto();
+                return true;
+            }
+        }
     }
 }
+
