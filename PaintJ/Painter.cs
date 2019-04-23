@@ -32,6 +32,8 @@ namespace PaintJ
 
         public void setObjeto(Objeto nuevoObjeto) => objeto = nuevoObjeto;
 
+        public void setNombre(int indice, string nuevoNombre) => objeto.setNombre(indice, nuevoNombre);
+
         public void pintar()
         {
             pintarEje();
@@ -61,6 +63,25 @@ namespace PaintJ
                 poligono.listaDePuntos.AddLast(puntoAnterior);
                 punto = null;
                 puntoAnterior = null;
+            }
+        }
+
+        public void pintarPoligono(int indice)
+        {
+            pintarEje();
+            Punto punto, puntoAnterior;
+            Poligono poligono = objeto.getPoligono(indice);
+            int cantidadPuntos = poligono.listaDePuntos.Count;
+            for (int j = 0; j < cantidadPuntos-1; j++)
+            {
+                puntoAnterior = (Punto)poligono.listaDePuntos.ElementAt(j);
+                punto = (Punto)poligono.listaDePuntos.ElementAt(j + 1);
+                Punto nuevoPA = puntoEnDescoordenadas(puntoAnterior.x, puntoAnterior.y);
+                Punto nuevoP = puntoEnDescoordenadas(punto.x, punto.y);
+                papel.DrawLine(
+                    lapiz,
+                    nuevoPA.x, nuevoPA.y,
+                    nuevoP.x, nuevoP.y);
             }
         }
 
@@ -110,7 +131,14 @@ namespace PaintJ
 
         public int cantidadDePoligonos() => objeto.listaDePoligonos.Count;
 
-        public void trasladarPoligono(Punto puntoATrasladar) => objeto.trasladarPoligono(puntoATrasladar);
+        public void setIndice(int nuevoIndice) => objeto.setIndice(nuevoIndice);
+
+        public int getIndice()=>objeto.getIndice();
+
+        public void trasladarPoligono(Punto puntoATrasladar)
+        {
+            objeto.trasladarPoligono(puntoATrasladar);
+        }
 
         public void trasladarAleatorioPoligono()
         {
@@ -141,6 +169,10 @@ namespace PaintJ
 
         public void escalarOrigen(double constante) => objeto.escalarOrigen((float)constante);
 
+        public void escalarPunto(Punto punto) => objeto.escalarPunto(punto);
+
+        public void escalarPunto(double constante) => objeto.escalarPunto((float)constante);
+
         public void reflexionX() => objeto.reflexionX();
 
         public void reflexionY() => objeto.reflexionY();
@@ -154,7 +186,7 @@ namespace PaintJ
                 {
                     borrarUltimoPunto();
                     Poligono recta = objeto.listaDePoligonos.Last();
-                    objeto.eliminarPoligono();
+                    objeto.eliminarPoligono(objeto.listaDePoligonos.Count-1);
                     objeto.reflexionRecta(recta);
                     return true;
                 }

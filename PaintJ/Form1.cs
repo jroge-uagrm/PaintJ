@@ -47,14 +47,15 @@ namespace PaintJ
                 tamañoVDondeDibujar());
             puedeDibujar = false;
             efecto = "nada";
-            avisoTxt.Visible = false;
-            avisoBtn.Visible = false;
-            avisoCheck.Visible = false;
+            aviso.Text = "PAINT";
+            modificarElementos(false, false, false, "", "", "");
         }
 
         private void Form1_SizeChanged(object sender, EventArgs e)
         {
-            areaDibujo.Height = Height - menuStrip1.Height - 45;
+            areaDibujo.Height = Height - menuStrip1.Height - 45 - menuStrip2.Height;
+            areaDibujo.Width = Width - listaDePoligonos.Width;
+            listaDePoligonos.Height = Height - menuStrip2.Height - menuStrip1.Height-50;
             Refresh();
             Objeto obj = dibujador.objeto;
             if (dibujador.noEstaVacio())
@@ -74,14 +75,6 @@ namespace PaintJ
             textBox2.Text = tamañoVDondeDibujar().ToString();
         }
 
-        private void Form1_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            if (puedeDibujar)
-            {
-                dibujador.terminarPoligono();
-            }
-        }
-
         private void areaDibujo_MouseMove(object sender, MouseEventArgs e)
         {
             dibujador.coordenadas(e.X, e.Y);
@@ -93,12 +86,64 @@ namespace PaintJ
 
         private void areaDibujo_MouseClick(object sender, MouseEventArgs e)
         {
-            Form1_MouseClick(sender, e);
+            Refresh();
+            switch (efecto)
+            {
+                case "trasladar":
+                    dibujador.trasladarPoligono(
+                        new Punto(dibujador.x, dibujador.y, 1));
+                    aviso.Text = "Poligono trasladado, puede seguir dibujando";
+                    break;
+                case "rotarPunto":
+                    dibujador.setPuntoParaRotarPunto(new Punto(
+                        dibujador.x, dibujador.y, 1));
+                    break;
+                case "escalarPunto":
+                    dibujador.escalarPunto(new Punto(dibujador.x, dibujador.y, 1));
+                    break;
+                case "reflexionRecta":
+                    if (dibujador.puntoReflexionRecta(false))
+                    {
+                        modificarElementos(false, true, false, "1", "REFLEXION", "");
+                    }
+                    dibujador.pintar();
+                    break;
+                default:
+                    if (puedeDibujar && efecto.CompareTo("nada") == 0)
+                    {
+                        dibujador.añadirPunto();
+                    }
+                    break;
+            }
+            if (dibujador.noEstaVacio())
+            {
+                dibujador.pintar();
+            }
+            if (efecto.CompareTo("rotarPunto") == 0)
+            {
+                aviso.Text = "Introducir grados a rotar :";
+                modificarElementos(true, true, true, "", "ROTAR", "Sentido HORARIO");
+            }
+            else if (efecto.CompareTo("escalarPunto") == 0)
+            {
+                aviso.Text = "Introducir constante :";
+                modificarElementos(true, true, true, "", "ESCALAR", "Veces mas Grande");
+            }
+            else if (efecto.CompareTo("reflexionRecta") != 0)
+            {
+                efecto = "nada";
+                modificarElementos(false, false, false, "", "", "");
+            }
         }
 
         private void areaDibujo_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            Form1_MouseDoubleClick(sender, e);
+            if (puedeDibujar)
+            {
+                dibujador.terminarPoligono();
+                listaDePoligonos.Items.Add(dibujador.objeto.
+                    getPoligono(dibujador.objeto.listaDePoligonos.Count-1));
+            }
         }
 
         private void nuevoToolStripMenuItem_Click(object sender, EventArgs e)
@@ -109,6 +154,7 @@ namespace PaintJ
                 tamañoHDondeDibujar(),
                 tamañoVDondeDibujar());
             dibujador.pintarEje();
+            listaDePoligonos.Items.Clear();
             puedeDibujar = true;
             aviso.Text = "Puede empezar a dibujar";
         }
@@ -202,27 +248,24 @@ namespace PaintJ
             bool a, bool b, bool c,
             string a1, string b1, string c1)
         {
-            avisoTxt.Visible = a;
             if (a) { avisoTxt.BringToFront(); } else { avisoTxt.SendToBack(); }
             avisoTxt.Text = a1;
             avisoTxt.Location = new Point(
-                        aviso.Width + 1,
-                        menuStrip1.Height + menuStrip1.Location.Y);
+                    aviso.Location.X+aviso.Width,
+                    avisoTxt.Location.Y);
 
-            avisoBtn.Visible = b;
             if (b) { avisoBtn.BringToFront(); } else { avisoBtn.SendToBack(); }
             avisoBtn.Text = b1;
             avisoBtn.Location = new Point(
-                avisoTxt.Width + avisoTxt.Location.X + 1,
-                menuStrip1.Height + menuStrip1.Location.Y);
+                    avisoTxt.Location.X + avisoTxt.Width,
+                    avisoBtn.Location.Y);
 
-            avisoCheck.Visible = c;
             if (c) { avisoCheck.BringToFront(); } else { avisoCheck.SendToBack(); }
             avisoCheck.Text = c1;
             avisoCheck.Checked = false;
             avisoCheck.Location = new Point(
-                avisoBtn.Width + avisoBtn.Location.X + 1,
-                menuStrip1.Height + menuStrip1.Location.Y);
+                    avisoBtn.Location.X + avisoBtn.Width,
+                    avisoCheck.Location.Y);
         }
 
         private bool esPosible()
@@ -245,7 +288,7 @@ namespace PaintJ
             return false;
         }
 
-        private void borrarLineaToolStripMenuItem_Click(object sender, EventArgs e)
+        private void borrarUltimaLineaToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (dibujador.borrarUltimoPunto())
             {
@@ -278,52 +321,19 @@ namespace PaintJ
                         avisoCheck.Text = "Veces mas Grande";
                     }
                     break;
+                case "escalarPunto":
+                    if (avisoCheck.Checked)
+                    {
+                        avisoCheck.Text = "Veces mas Pequeño";
+                    }
+                    else
+                    {
+                        avisoCheck.Text = "Veces mas Grande";
+                    }
+                    break;
                 default:
                     break;
             }
-        }
-
-        private void Form1_MouseClick(object sender, MouseEventArgs e)
-        {
-            Refresh();
-            switch (efecto)
-            {
-                case "trasladar":
-                    dibujador.trasladarPoligono(
-                        new Punto(dibujador.x, dibujador.y, 1));
-                    aviso.Text = "Poligono trasladado, puede seguir dibujando";
-                    break;
-                case "rotarPunto":
-                    dibujador.setPuntoParaRotarPunto(new Punto(
-                        dibujador.x,dibujador.y,1));
-                    break;
-                case "reflexionRecta":
-                    if (dibujador.puntoReflexionRecta(false))
-                    {
-                        modificarElementos(false, true, false, "1", "REFLEXION", "");
-                    }
-                    dibujador.pintar();
-                    break;
-                default:
-                    if (puedeDibujar && efecto.CompareTo("nada")==0)
-                    {
-                        dibujador.añadirPunto();
-                    }
-                    break;
-            }
-            if (dibujador.noEstaVacio())
-            {
-                dibujador.pintar();
-            }
-            if (efecto.CompareTo("rotarPunto") == 0)
-            {
-                aviso.Text = "Introducir grados a rotar :";
-                modificarElementos(true, true, true, "", "ROTAR", "Sentido HORARIO");
-            }else if(efecto.CompareTo("reflexionRecta") != 0)
-            {
-                efecto = "nada";
-                modificarElementos(false, false, false, "", "", "");
-            }   
         }
 
         private void avisoBtn_Click(object sender, EventArgs e)
@@ -363,6 +373,31 @@ namespace PaintJ
                         bool fr=dibujador.puntoReflexionRecta(true);
                         aviso.Text = "Reflexion completa, puede seguir dibujando";
                         break;
+                    case "escalarPunto":
+                        numero = avisoCheck.Checked ? 1 / numero : numero;
+                        dibujador.escalarPunto(numero);
+                        aviso.Text = "Poligono escalado, puede seguir dibujando";
+                        break;
+                    case "nuevoNombre":
+                        int indice = listaDePoligonos.SelectedIndex;
+                        if (indice >= 0)
+                        {
+                            string nombre = avisoTxt.Text;
+                            if (nombre.CompareTo("") == 0)
+                            {
+                                MessageBox.Show("Ingrese un Nombre");
+                            }
+                            else
+                            {
+                                dibujador.setNombre(indice, nombre);
+                                actualizarListaDePoligonos();
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Seleccionar Poligono");
+                        }
+                            break;
                     default:
                         break;
                 }
@@ -374,8 +409,8 @@ namespace PaintJ
             {
                 MessageBox.Show("ERROR : "+ex.Message);
             }
-        }
-
+        }        
+        
         private void seleccionarPuntoToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (esPosible())
@@ -386,7 +421,7 @@ namespace PaintJ
             }
         }
 
-        private void puntoAleatorioToolStripMenuItem_Click(object sender, EventArgs e)
+        private void puntoAleatorioToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             if (esPosible())
             {
@@ -398,7 +433,7 @@ namespace PaintJ
             }
         }
 
-        private void mismoEjeToolStripMenuItem_Click(object sender, EventArgs e)
+        private void mismoEjeToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             if (esPosible())
             {
@@ -408,7 +443,7 @@ namespace PaintJ
             }
         }
 
-        private void respectoAlOrigenToolStripMenuItem_Click(object sender, EventArgs e)
+        private void origenToolStripMenuItem2_Click(object sender, EventArgs e)
         {
             if (esPosible())
             {
@@ -418,7 +453,7 @@ namespace PaintJ
             }
         }
 
-        private void respectoAUnPuntoToolStripMenuItem_Click(object sender, EventArgs e)
+        private void cualquierPuntoToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             if (esPosible())
             {
@@ -428,27 +463,7 @@ namespace PaintJ
             }
         }
 
-        private void origenToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (esPosible())
-            {
-                efecto = "escalarEje";
-                aviso.Text = "Introducir una constante :";
-                modificarElementos(true, true, true, "", "ESCALAR", "Veces mas Grande");
-            }
-        }
-
-        private void origenToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            if (esPosible())
-            {
-                aviso.Text = "Introducir una constante :";
-                efecto = "escalarOrigen";
-                modificarElementos(true, true, true, "", "ESCALAR", "Veces mas Grande");
-            }
-        }
-
-        private void ejeXToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ejeXToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             if (esPosible())
             {
@@ -460,7 +475,7 @@ namespace PaintJ
             }
         }
 
-        private void ejeYToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ejeYToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             if (esPosible())
             {
@@ -472,7 +487,7 @@ namespace PaintJ
             }
         }
 
-        private void cualquierRectaToolStripMenuItem_Click(object sender, EventArgs e)
+        private void rectaCualquieraToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (esPosible())
             {
@@ -481,6 +496,97 @@ namespace PaintJ
                 modificarElementos(false, false, false, "", "", "");
             }
         }
+
+        private void mismoEjeToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (esPosible())
+            {
+                efecto = "escalarEje";
+                aviso.Text = "Introducir una constante :";
+                modificarElementos(true, true, true, "", "ESCALAR", "Veces mas Grande");
+            }
+        }
+
+        private void origenToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            if (esPosible())
+            {
+                aviso.Text = "Introducir una constante :";
+                efecto = "escalarOrigen";
+                modificarElementos(true, true, true, "", "ESCALAR", "Veces mas Grande");
+            }
+        }
+
+        private void cualquierPuntoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (esPosible())
+            {
+                efecto = "escalarPunto";
+                aviso.Text = "Seleccione un punto para escalar";
+                modificarElementos(false, false, false, "", "", "");
+            }
+        }
+
+        private void pruebasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            /*int indiceDePoligonoSeleccionado=0;
+            foreach (int indexChecked in listaDePoligonos.CheckedIndices)
+            {
+                MessageBox.Show("Index#: " + indexChecked.ToString() + ", is checked. Checked state is:" +
+                                listaDePoligonos.GetItemCheckState(indexChecked).ToString() + ".");
+            }
+            
+            foreach (object itemChecked in listaDePoligonos.CheckedItems)
+            {
+                MessageBox.Show("Item with title: \"" + itemChecked.ToString() +
+                                "\", is checked. Checked state is: " +
+                                listaDePoligonos.GetItemCheckState(listaDePoligonos.Items.IndexOf(itemChecked)).ToString() + ".");
+            }*/
+        }
+
+        private void listaDePoligonos_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int indiceDePoligonoSeleccionado = listaDePoligonos.SelectedIndex;
+            listaDePoligonos.SetItemChecked(indiceDePoligonoSeleccionado, true);
+            dibujador.setIndice(indiceDePoligonoSeleccionado);
+            foreach (int indexChecked in listaDePoligonos.CheckedIndices)
+            {
+                if (indexChecked != indiceDePoligonoSeleccionado)
+                {
+                    listaDePoligonos.SetItemChecked(indexChecked, false);
+                }
+                /*MessageBox.Show("Index#: " + indexChecked.ToString() + ", is checked. Checked state is:" +
+                                listaDePoligonos.GetItemCheckState(indexChecked).ToString() + ".");*/
+            }
+
+            foreach (object itemChecked in listaDePoligonos.CheckedItems)
+            {
+                /*MessageBox.Show("Item with title: \"" + itemChecked.ToString() +
+                                "\", is checked. Checked state is: " +
+                                listaDePoligonos.GetItemCheckState(listaDePoligonos.Items.IndexOf(itemChecked)).ToString() + ".");*/
+            }
+        }
+
+        private void actualizarListaDePoligonos()
+        {
+            listaDePoligonos.Items.Clear();
+            int cantidadDePoligonos = dibujador.cantidadDePoligonos();
+            for(int i = 1; i <= cantidadDePoligonos; i++)
+            {
+                listaDePoligonos.Items.Add(dibujador.objeto.getPoligono(i - 1));
+            }
+        }
+
+        private void renombrarPoligonoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            aviso.Text = "Seleccione el poligono e ingrese nuevo nombre :";
+            modificarElementos(true, true, false, "", "MODIFICAR", "");
+            efecto = "nuevoNombre";
+        }
     }
 }
+
+
+
+
 

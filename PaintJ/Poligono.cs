@@ -25,6 +25,11 @@ namespace PaintJ
             limpiarMatriz();
         }
 
+        public override string ToString()
+        {
+            return nombre;
+        }
+
         public void setNombre(string nuevoNombre) => nombre = nuevoNombre;
 
         public void añadirPunto(Punto punto)=> listaDePuntos.AddLast(punto);
