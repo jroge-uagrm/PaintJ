@@ -34,6 +34,7 @@
             this.abrirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.guardarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.másToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.renombrarPoligonoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -66,7 +67,6 @@
             this.borrarUltimaLineaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aviso = new System.Windows.Forms.Label();
             this.listaDePoligonos = new System.Windows.Forms.CheckedListBox();
-            this.renombrarPoligonoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.poligonoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.areaDibujo)).BeginInit();
@@ -115,6 +115,13 @@
             this.másToolStripMenuItem.Name = "másToolStripMenuItem";
             this.másToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
             this.másToolStripMenuItem.Text = "Más";
+            // 
+            // renombrarPoligonoToolStripMenuItem
+            // 
+            this.renombrarPoligonoToolStripMenuItem.Name = "renombrarPoligonoToolStripMenuItem";
+            this.renombrarPoligonoToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.renombrarPoligonoToolStripMenuItem.Text = "Renombrar Poligono";
+            this.renombrarPoligonoToolStripMenuItem.Click += new System.EventHandler(this.renombrarPoligonoToolStripMenuItem_Click);
             // 
             // label1
             // 
@@ -389,13 +396,6 @@
             this.listaDePoligonos.Size = new System.Drawing.Size(120, 454);
             this.listaDePoligonos.TabIndex = 41;
             this.listaDePoligonos.SelectedIndexChanged += new System.EventHandler(this.listaDePoligonos_SelectedIndexChanged);
-            // 
-            // renombrarPoligonoToolStripMenuItem
-            // 
-            this.renombrarPoligonoToolStripMenuItem.Name = "renombrarPoligonoToolStripMenuItem";
-            this.renombrarPoligonoToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.renombrarPoligonoToolStripMenuItem.Text = "Renombrar Poligono";
-            this.renombrarPoligonoToolStripMenuItem.Click += new System.EventHandler(this.renombrarPoligonoToolStripMenuItem_Click);
             // 
             // poligonoBindingSource
             // 

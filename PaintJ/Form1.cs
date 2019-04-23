@@ -16,7 +16,7 @@ namespace PaintJ
     [Serializable]
     public partial class Form1 : Form
     {
-        Painter dibujador;
+        Painter dibujador,dibujadorPoligonos;
         String efecto;
         bool puedeDibujar;
         public Form1()
@@ -141,8 +141,15 @@ namespace PaintJ
             if (puedeDibujar)
             {
                 dibujador.terminarPoligono();
-                listaDePoligonos.Items.Add(dibujador.objeto.
-                    getPoligono(dibujador.objeto.listaDePoligonos.Count-1));
+                PictureBox celda = new PictureBox();
+                celda.Width = listaDePoligonos.Width - 5;
+                celda.Height = 20;
+                dibujadorPoligonos = new Painter(celda.Width,celda.Height);
+                dibujadorPoligonos.nuevoObjeto(
+                    celda.CreateGraphics(), celda.Width, celda.Height);
+                dibujador.setObjeto(dibujador.getObjeto());
+                dibujador.pintarPoligono(dibujador.objeto.listaDePoligonos.Count - 1);
+                listaDePoligonos.Items.Add(new PictureBox());
             }
         }
 
@@ -181,6 +188,7 @@ namespace PaintJ
                             nuevoToolStripMenuItem_Click(sender, e);
                             dibujador.setObjeto(obj);
                             dibujador.pintar();
+                            actualizarListaDePoligonos();
                             resultado = "ABIERTO CORRECTAMENTE";
                         }
                     }
@@ -341,7 +349,11 @@ namespace PaintJ
             Refresh();
             try
             {
-                double numero = Convert.ToDouble(avisoTxt.Text.ToString());
+                double numero=0;
+                if (efecto.CompareTo("nuevoNombre") != 0)
+                {
+                    numero = Convert.ToDouble(avisoTxt.Text.ToString());
+                }
                 switch (efecto)
                 {
                     case "rotarMismoEje":
@@ -385,7 +397,7 @@ namespace PaintJ
                             string nombre = avisoTxt.Text;
                             if (nombre.CompareTo("") == 0)
                             {
-                                MessageBox.Show("Ingrese un Nombre");
+                                throw new Exception("Debe ingresar un nombre");
                             }
                             else
                             {
@@ -395,19 +407,22 @@ namespace PaintJ
                         }
                         else
                         {
-                            MessageBox.Show("Seleccionar Poligono");
+                            throw new Exception("Debe seleccionar un poligono");
                         }
                             break;
                     default:
                         break;
                 }
-                dibujador.pintar();
                 modificarElementos(false, false, false, "", "", "");
                 efecto = "nada";
             }
             catch (Exception ex)
             {
                 MessageBox.Show("ERROR : "+ex.Message);
+            }
+            finally
+            {
+                dibujador.pintar();
             }
         }        
         

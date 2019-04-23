@@ -32,6 +32,8 @@ namespace PaintJ
 
         public void setObjeto(Objeto nuevoObjeto) => objeto = nuevoObjeto;
 
+        public Objeto getObjeto()=>objeto;
+
         public void setNombre(int indice, string nuevoNombre) => objeto.setNombre(indice, nuevoNombre);
 
         public void pintar()
@@ -68,7 +70,6 @@ namespace PaintJ
 
         public void pintarPoligono(int indice)
         {
-            pintarEje();
             Punto punto, puntoAnterior;
             Poligono poligono = objeto.getPoligono(indice);
             int cantidadPuntos = poligono.listaDePuntos.Count;
