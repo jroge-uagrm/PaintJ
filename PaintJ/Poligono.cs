@@ -180,6 +180,10 @@ namespace PaintJ
                 listaDePuntos.AddLast(nuevoPunto);
             }*/
         }
+        public string toString()
+        {
+            return nombre;
+        }
     }
 }
 

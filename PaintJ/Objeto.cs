@@ -72,7 +72,6 @@ namespace PaintJ
                 else
                 {
                     poligonoTerminado = false;
-                    listaDePoligonos.Last().setNombre("nombre");
                 }
             }
         }

@@ -68,7 +68,7 @@ namespace PaintJ
             }
         }
 
-        public void pintarPoligono(int indice)
+        public Graphics getPoligonoDibujado(int indice)
         {
             Punto punto, puntoAnterior;
             Poligono poligono = objeto.getPoligono(indice);
@@ -83,7 +83,7 @@ namespace PaintJ
                     lapiz,
                     nuevoPA.x, nuevoPA.y,
                     nuevoP.x, nuevoP.y);
-            }
+            }return papel;
         }
 
         public void pintarEje()
@@ -177,7 +177,7 @@ namespace PaintJ
         public void reflexionX() => objeto.reflexionX();
 
         public void reflexionY() => objeto.reflexionY();
-        //Se cambio en coordenadas
+        
         public bool puntoReflexionRecta(bool ya)
         {
             objeto.añadirPunto(new Punto(x, y, 1));
@@ -188,6 +188,7 @@ namespace PaintJ
                     borrarUltimoPunto();
                     Poligono recta = objeto.listaDePoligonos.Last();
                     objeto.eliminarPoligono(objeto.listaDePoligonos.Count-1);
+                    objeto.poligonoTerminado = true;
                     objeto.reflexionRecta(recta);
                     return true;
                 }

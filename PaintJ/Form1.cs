@@ -16,7 +16,7 @@ namespace PaintJ
     [Serializable]
     public partial class Form1 : Form
     {
-        Painter dibujador,dibujadorPoligonos;
+        Painter dibujador;
         String efecto;
         bool puedeDibujar;
         public Form1()
@@ -47,7 +47,6 @@ namespace PaintJ
                 tamañoVDondeDibujar());
             puedeDibujar = false;
             efecto = "nada";
-            aviso.Text = "PAINT";
             modificarElementos(false, false, false, "", "", "");
         }
 
@@ -141,15 +140,7 @@ namespace PaintJ
             if (puedeDibujar)
             {
                 dibujador.terminarPoligono();
-                PictureBox celda = new PictureBox();
-                celda.Width = listaDePoligonos.Width - 5;
-                celda.Height = 20;
-                dibujadorPoligonos = new Painter(celda.Width,celda.Height);
-                dibujadorPoligonos.nuevoObjeto(
-                    celda.CreateGraphics(), celda.Width, celda.Height);
-                dibujador.setObjeto(dibujador.getObjeto());
-                dibujador.pintarPoligono(dibujador.objeto.listaDePoligonos.Count - 1);
-                listaDePoligonos.Items.Add(new PictureBox());
+                actualizarListaDePoligonos();
             }
         }
 
@@ -302,6 +293,7 @@ namespace PaintJ
             {
                 Refresh();
                 dibujador.pintar();
+                actualizarListaDePoligonos();
             }
         }
 
@@ -382,7 +374,7 @@ namespace PaintJ
                         aviso.Text = "Poligono escalado, puede seguir dibujando";
                         break;
                     case "reflexionRecta":
-                        bool fr=dibujador.puntoReflexionRecta(true);
+                        dibujador.puntoReflexionRecta(true);
                         aviso.Text = "Reflexion completa, puede seguir dibujando";
                         break;
                     case "escalarPunto":
@@ -394,7 +386,7 @@ namespace PaintJ
                         int indice = listaDePoligonos.SelectedIndex;
                         if (indice >= 0)
                         {
-                            string nombre = avisoTxt.Text;
+                            string nombre = avisoTxt.Text.ToString();
                             if (nombre.CompareTo("") == 0)
                             {
                                 throw new Exception("Debe ingresar un nombre");
@@ -403,13 +395,14 @@ namespace PaintJ
                             {
                                 dibujador.setNombre(indice, nombre);
                                 actualizarListaDePoligonos();
+                                aviso.Text = "Cambio de nombre exitoso, puede seguir dibujando";
                             }
                         }
                         else
                         {
                             throw new Exception("Debe seleccionar un poligono");
                         }
-                            break;
+                        break;
                     default:
                         break;
                 }
@@ -542,23 +535,6 @@ namespace PaintJ
             }
         }
 
-        private void pruebasToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            /*int indiceDePoligonoSeleccionado=0;
-            foreach (int indexChecked in listaDePoligonos.CheckedIndices)
-            {
-                MessageBox.Show("Index#: " + indexChecked.ToString() + ", is checked. Checked state is:" +
-                                listaDePoligonos.GetItemCheckState(indexChecked).ToString() + ".");
-            }
-            
-            foreach (object itemChecked in listaDePoligonos.CheckedItems)
-            {
-                MessageBox.Show("Item with title: \"" + itemChecked.ToString() +
-                                "\", is checked. Checked state is: " +
-                                listaDePoligonos.GetItemCheckState(listaDePoligonos.Items.IndexOf(itemChecked)).ToString() + ".");
-            }*/
-        }
-
         private void listaDePoligonos_SelectedIndexChanged(object sender, EventArgs e)
         {
             int indiceDePoligonoSeleccionado = listaDePoligonos.SelectedIndex;
@@ -570,15 +546,6 @@ namespace PaintJ
                 {
                     listaDePoligonos.SetItemChecked(indexChecked, false);
                 }
-                /*MessageBox.Show("Index#: " + indexChecked.ToString() + ", is checked. Checked state is:" +
-                                listaDePoligonos.GetItemCheckState(indexChecked).ToString() + ".");*/
-            }
-
-            foreach (object itemChecked in listaDePoligonos.CheckedItems)
-            {
-                /*MessageBox.Show("Item with title: \"" + itemChecked.ToString() +
-                                "\", is checked. Checked state is: " +
-                                listaDePoligonos.GetItemCheckState(listaDePoligonos.Items.IndexOf(itemChecked)).ToString() + ".");*/
             }
         }
 
@@ -588,15 +555,23 @@ namespace PaintJ
             int cantidadDePoligonos = dibujador.cantidadDePoligonos();
             for(int i = 1; i <= cantidadDePoligonos; i++)
             {
-                listaDePoligonos.Items.Add(dibujador.objeto.getPoligono(i - 1));
+                listaDePoligonos.Items.Add(dibujador.objeto.getPoligono(i-1));
             }
         }
 
         private void renombrarPoligonoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            aviso.Text = "Seleccione el poligono e ingrese nuevo nombre :";
-            modificarElementos(true, true, false, "", "MODIFICAR", "");
-            efecto = "nuevoNombre";
+            if (esPosible())
+            {
+                aviso.Text = "Seleccione el poligono e ingrese nuevo nombre :";
+                modificarElementos(true, true, false, "", "MODIFICAR", "");
+                efecto = "nuevoNombre";
+            }
+        }
+
+        private void areaDibujo_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

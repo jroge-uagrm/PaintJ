@@ -68,6 +68,7 @@
             this.aviso = new System.Windows.Forms.Label();
             this.listaDePoligonos = new System.Windows.Forms.CheckedListBox();
             this.poligonoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.label4 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.areaDibujo)).BeginInit();
             this.menuStrip2.SuspendLayout();
@@ -206,6 +207,7 @@
             this.areaDibujo.Size = new System.Drawing.Size(595, 454);
             this.areaDibujo.TabIndex = 33;
             this.areaDibujo.TabStop = false;
+            this.areaDibujo.Click += new System.EventHandler(this.areaDibujo_Click);
             this.areaDibujo.MouseClick += new System.Windows.Forms.MouseEventHandler(this.areaDibujo_MouseClick);
             this.areaDibujo.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.areaDibujo_MouseDoubleClick);
             this.areaDibujo.MouseMove += new System.Windows.Forms.MouseEventHandler(this.areaDibujo_MouseMove);
@@ -289,21 +291,21 @@
             // mismoEjeToolStripMenuItem
             // 
             this.mismoEjeToolStripMenuItem.Name = "mismoEjeToolStripMenuItem";
-            this.mismoEjeToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.mismoEjeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.mismoEjeToolStripMenuItem.Text = "Mismo Eje";
             this.mismoEjeToolStripMenuItem.Click += new System.EventHandler(this.mismoEjeToolStripMenuItem_Click_1);
             // 
             // origenToolStripMenuItem2
             // 
             this.origenToolStripMenuItem2.Name = "origenToolStripMenuItem2";
-            this.origenToolStripMenuItem2.Size = new System.Drawing.Size(160, 22);
+            this.origenToolStripMenuItem2.Size = new System.Drawing.Size(180, 22);
             this.origenToolStripMenuItem2.Text = "Origen";
             this.origenToolStripMenuItem2.Click += new System.EventHandler(this.origenToolStripMenuItem2_Click);
             // 
             // cualquierPuntoToolStripMenuItem1
             // 
             this.cualquierPuntoToolStripMenuItem1.Name = "cualquierPuntoToolStripMenuItem1";
-            this.cualquierPuntoToolStripMenuItem1.Size = new System.Drawing.Size(160, 22);
+            this.cualquierPuntoToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.cualquierPuntoToolStripMenuItem1.Text = "Cualquier Punto";
             this.cualquierPuntoToolStripMenuItem1.Click += new System.EventHandler(this.cualquierPuntoToolStripMenuItem1_Click);
             // 
@@ -391,9 +393,9 @@
             // 
             this.listaDePoligonos.FormatString = "formato";
             this.listaDePoligonos.FormattingEnabled = true;
-            this.listaDePoligonos.Location = new System.Drawing.Point(9, 56);
+            this.listaDePoligonos.Location = new System.Drawing.Point(9, 59);
             this.listaDePoligonos.Name = "listaDePoligonos";
-            this.listaDePoligonos.Size = new System.Drawing.Size(120, 454);
+            this.listaDePoligonos.Size = new System.Drawing.Size(124, 454);
             this.listaDePoligonos.TabIndex = 41;
             this.listaDePoligonos.SelectedIndexChanged += new System.EventHandler(this.listaDePoligonos_SelectedIndexChanged);
             // 
@@ -401,11 +403,21 @@
             // 
             this.poligonoBindingSource.DataSource = typeof(PaintJ.Poligono);
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 40);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(121, 13);
+            this.label4.TabIndex = 42;
+            this.label4.Text = "LISTA DE POLIGONOS";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(737, 520);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.avisoCheck);
             this.Controls.Add(this.avisoBtn);
             this.Controls.Add(this.aviso);
@@ -480,6 +492,7 @@
         private System.Windows.Forms.ToolStripMenuItem borrarUltimaLineaToolStripMenuItem;
         private System.Windows.Forms.CheckedListBox listaDePoligonos;
         private System.Windows.Forms.ToolStripMenuItem renombrarPoligonoToolStripMenuItem;
+        private System.Windows.Forms.Label label4;
     }
 }
 
