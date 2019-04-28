@@ -16,7 +16,7 @@ namespace PaintJ
         }
         public override string ToString()
         {
-            return "("+x.ToString() + " , " + y.ToString()+" , "+z.ToString()+")";
+            return "("+((int)x).ToString() + "," + ((int)y).ToString()+")";
         }
     }
 }

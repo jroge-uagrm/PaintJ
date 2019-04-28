@@ -25,10 +25,7 @@ namespace PaintJ
             limpiarMatriz();
         }
 
-        public override string ToString()
-        {
-            return nombre;
-        }
+        public override string ToString() => nombre;
 
         public void setNombre(string nuevoNombre) => nombre = nuevoNombre;
 

@@ -14,8 +14,10 @@ namespace PaintJ
         public Pen lapiz = new Pen(Color.Black);
         public Graphics papel;
         public Objeto objeto;
+        public Poligono poligonoAux;
         public float x, y;
         public int a,b,H,V;
+        public LinkedList<Efecto> listDeEfectos=new LinkedList<Efecto>();
 
         public Painter(int nuevaH, int nuevaY)
         {
@@ -29,6 +31,14 @@ namespace PaintJ
             V = nuevaY;
             objeto = new Objeto();
         }
+
+        public void nuevaListaDeEfectos() => listDeEfectos = new LinkedList<Efecto>();
+
+        public void añadirACola(string efecto, Punto punto) => listDeEfectos.AddLast(new Efecto(efecto, punto,objeto.indice));
+        public void añadirACola(string efecto, float numero) => listDeEfectos.AddLast(new Efecto(efecto, numero, objeto.indice));
+        public void añadirACola(string efecto, Poligono poligono) => listDeEfectos.AddLast(new Efecto(efecto, poligono, objeto.indice));
+
+        public Efecto getEfecto(int i) => listDeEfectos.ElementAt(i);
 
         public void setObjeto(Objeto nuevoObjeto) => objeto = nuevoObjeto;
 
@@ -66,6 +76,7 @@ namespace PaintJ
                 punto = null;
                 puntoAnterior = null;
             }
+            objeto.setPuntoEnCentro();
         }
 
         public Graphics getPoligonoDibujado(int indice)
@@ -132,7 +143,15 @@ namespace PaintJ
 
         public int cantidadDePoligonos() => objeto.listaDePoligonos.Count;
 
-        public void setIndice(int nuevoIndice) => objeto.setIndice(nuevoIndice);
+        public void setIndice(int nuevoIndice)
+        {
+            if (nuevoIndice == -1)
+            {
+                objeto.setPuntoEnCentro();
+            }
+            objeto.setPuntoEnCentro();
+            objeto.setIndice(nuevoIndice);
+        }
 
         public int getIndice()=>objeto.getIndice();
 
@@ -187,6 +206,8 @@ namespace PaintJ
                 {
                     borrarUltimoPunto();
                     Poligono recta = objeto.listaDePoligonos.Last();
+                    poligonoAux = recta;
+                    poligonoAux.setNombre("recta");
                     objeto.eliminarPoligono(objeto.listaDePoligonos.Count-1);
                     objeto.poligonoTerminado = true;
                     objeto.reflexionRecta(recta);

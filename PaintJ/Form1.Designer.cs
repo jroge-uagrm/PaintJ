@@ -65,10 +65,16 @@
             this.origenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cualquierPuntoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.borrarUltimaLineaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.iniciarDetenerAnimacionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aviso = new System.Windows.Forms.Label();
             this.listaDePoligonos = new System.Windows.Forms.CheckedListBox();
-            this.poligonoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.label4 = new System.Windows.Forms.Label();
+            this.poligonoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.label5 = new System.Windows.Forms.Label();
+            this.listaDeEfectos = new System.Windows.Forms.CheckedListBox();
+            this.iniciarGrabacionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.terminarGrabacionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reproducirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.areaDibujo)).BeginInit();
             this.menuStrip2.SuspendLayout();
@@ -207,7 +213,6 @@
             this.areaDibujo.Size = new System.Drawing.Size(595, 454);
             this.areaDibujo.TabIndex = 33;
             this.areaDibujo.TabStop = false;
-            this.areaDibujo.Click += new System.EventHandler(this.areaDibujo_Click);
             this.areaDibujo.MouseClick += new System.Windows.Forms.MouseEventHandler(this.areaDibujo_MouseClick);
             this.areaDibujo.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.areaDibujo_MouseDoubleClick);
             this.areaDibujo.MouseMove += new System.Windows.Forms.MouseEventHandler(this.areaDibujo_MouseMove);
@@ -248,10 +253,11 @@
             this.rotacionToolStripMenuItem,
             this.reflexionToolStripMenuItem2,
             this.escalacionToolStripMenuItem,
-            this.borrarUltimaLineaToolStripMenuItem});
-            this.menuStrip2.Location = new System.Drawing.Point(119, 29);
+            this.borrarUltimaLineaToolStripMenuItem,
+            this.iniciarDetenerAnimacionToolStripMenuItem});
+            this.menuStrip2.Location = new System.Drawing.Point(132, 28);
             this.menuStrip2.Name = "menuStrip2";
-            this.menuStrip2.Size = new System.Drawing.Size(407, 24);
+            this.menuStrip2.Size = new System.Drawing.Size(604, 24);
             this.menuStrip2.TabIndex = 38;
             this.menuStrip2.Text = "menuStrip2";
             // 
@@ -291,21 +297,21 @@
             // mismoEjeToolStripMenuItem
             // 
             this.mismoEjeToolStripMenuItem.Name = "mismoEjeToolStripMenuItem";
-            this.mismoEjeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.mismoEjeToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.mismoEjeToolStripMenuItem.Text = "Mismo Eje";
             this.mismoEjeToolStripMenuItem.Click += new System.EventHandler(this.mismoEjeToolStripMenuItem_Click_1);
             // 
             // origenToolStripMenuItem2
             // 
             this.origenToolStripMenuItem2.Name = "origenToolStripMenuItem2";
-            this.origenToolStripMenuItem2.Size = new System.Drawing.Size(180, 22);
+            this.origenToolStripMenuItem2.Size = new System.Drawing.Size(160, 22);
             this.origenToolStripMenuItem2.Text = "Origen";
             this.origenToolStripMenuItem2.Click += new System.EventHandler(this.origenToolStripMenuItem2_Click);
             // 
             // cualquierPuntoToolStripMenuItem1
             // 
             this.cualquierPuntoToolStripMenuItem1.Name = "cualquierPuntoToolStripMenuItem1";
-            this.cualquierPuntoToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.cualquierPuntoToolStripMenuItem1.Size = new System.Drawing.Size(160, 22);
             this.cualquierPuntoToolStripMenuItem1.Text = "Cualquier Punto";
             this.cualquierPuntoToolStripMenuItem1.Click += new System.EventHandler(this.cualquierPuntoToolStripMenuItem1_Click);
             // 
@@ -378,6 +384,16 @@
             this.borrarUltimaLineaToolStripMenuItem.Text = "Borrar Ultima Linea";
             this.borrarUltimaLineaToolStripMenuItem.Click += new System.EventHandler(this.borrarUltimaLineaToolStripMenuItem_Click);
             // 
+            // iniciarDetenerAnimacionToolStripMenuItem
+            // 
+            this.iniciarDetenerAnimacionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.iniciarGrabacionToolStripMenuItem,
+            this.terminarGrabacionToolStripMenuItem,
+            this.reproducirToolStripMenuItem});
+            this.iniciarDetenerAnimacionToolStripMenuItem.Name = "iniciarDetenerAnimacionToolStripMenuItem";
+            this.iniciarDetenerAnimacionToolStripMenuItem.Size = new System.Drawing.Size(77, 20);
+            this.iniciarDetenerAnimacionToolStripMenuItem.Text = "Animacion";
+            // 
             // aviso
             // 
             this.aviso.AutoSize = true;
@@ -395,28 +411,72 @@
             this.listaDePoligonos.FormattingEnabled = true;
             this.listaDePoligonos.Location = new System.Drawing.Point(9, 59);
             this.listaDePoligonos.Name = "listaDePoligonos";
-            this.listaDePoligonos.Size = new System.Drawing.Size(124, 454);
+            this.listaDePoligonos.Size = new System.Drawing.Size(124, 169);
             this.listaDePoligonos.TabIndex = 41;
             this.listaDePoligonos.SelectedIndexChanged += new System.EventHandler(this.listaDePoligonos_SelectedIndexChanged);
+            this.listaDePoligonos.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listaDePoligonos_MouseDoubleClick);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(12, 40);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(118, 13);
+            this.label4.TabIndex = 42;
+            this.label4.Text = "LISTA DE POLIGONOS";
             // 
             // poligonoBindingSource
             // 
             this.poligonoBindingSource.DataSource = typeof(PaintJ.Poligono);
             // 
-            // label4
+            // label5
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 40);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(121, 13);
-            this.label4.TabIndex = 42;
-            this.label4.Text = "LISTA DE POLIGONOS";
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(11, 291);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(103, 13);
+            this.label5.TabIndex = 44;
+            this.label5.Text = "LISTA DE EFECTOS";
+            // 
+            // listaDeEfectos
+            // 
+            this.listaDeEfectos.FormatString = "formato";
+            this.listaDeEfectos.FormattingEnabled = true;
+            this.listaDeEfectos.Location = new System.Drawing.Point(8, 310);
+            this.listaDeEfectos.Name = "listaDeEfectos";
+            this.listaDeEfectos.Size = new System.Drawing.Size(124, 199);
+            this.listaDeEfectos.TabIndex = 43;
+            // 
+            // iniciarGrabacionToolStripMenuItem
+            // 
+            this.iniciarGrabacionToolStripMenuItem.Name = "iniciarGrabacionToolStripMenuItem";
+            this.iniciarGrabacionToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.iniciarGrabacionToolStripMenuItem.Text = "Iniciar Grabacion";
+            this.iniciarGrabacionToolStripMenuItem.Click += new System.EventHandler(this.iniciarGrabacionToolStripMenuItem_Click);
+            // 
+            // terminarGrabacionToolStripMenuItem
+            // 
+            this.terminarGrabacionToolStripMenuItem.Name = "terminarGrabacionToolStripMenuItem";
+            this.terminarGrabacionToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.terminarGrabacionToolStripMenuItem.Text = "Terminar Grabacion";
+            this.terminarGrabacionToolStripMenuItem.Click += new System.EventHandler(this.terminarGrabacionToolStripMenuItem_Click);
+            // 
+            // reproducirToolStripMenuItem
+            // 
+            this.reproducirToolStripMenuItem.Name = "reproducirToolStripMenuItem";
+            this.reproducirToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.reproducirToolStripMenuItem.Text = "Reproducir";
+            this.reproducirToolStripMenuItem.Click += new System.EventHandler(this.reproducirToolStripMenuItem_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(737, 520);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.listaDeEfectos);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.avisoCheck);
             this.Controls.Add(this.avisoBtn);
@@ -493,6 +553,12 @@
         private System.Windows.Forms.CheckedListBox listaDePoligonos;
         private System.Windows.Forms.ToolStripMenuItem renombrarPoligonoToolStripMenuItem;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ToolStripMenuItem iniciarDetenerAnimacionToolStripMenuItem;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.CheckedListBox listaDeEfectos;
+        private System.Windows.Forms.ToolStripMenuItem iniciarGrabacionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem terminarGrabacionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem reproducirToolStripMenuItem;
     }
 }
 
