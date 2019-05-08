@@ -463,8 +463,6 @@
             this.listaDePoligonos.Size = new System.Drawing.Size(124, 169);
             this.listaDePoligonos.TabIndex = 41;
             this.listaDePoligonos.MouseClick += new System.Windows.Forms.MouseEventHandler(this.listaDePoligonos_MouseClick);
-            this.listaDePoligonos.SelectedIndexChanged += new System.EventHandler(this.listaDePoligonos_SelectedIndexChanged);
-            this.listaDePoligonos.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listaDePoligonos_MouseDoubleClick_1);
             // 
             // label4
             // 
@@ -497,6 +495,7 @@
             // 
             // timer
             // 
+            this.timer.Interval = 50;
             this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
             // poligonoBindingSource

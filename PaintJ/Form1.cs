@@ -198,7 +198,7 @@ namespace PaintJ
             //PIE 1     (3)
             dibujador.objeto.añadirPunto(new Punto(-87, 11, 1));
             dibujador.objeto.añadirPunto(new Punto(-91, 3, 1));
-            dibujador.objeto.añadirPunto(new Punto(-88, 1, 1));
+            dibujador.objeto.añadirPunto(new Punto(-88, (float)1.5, 1));
             dibujador.terminarPoligono();
             dibujador.setNombre(3,"PIE 1");
             //PIERNA 2  (4)
@@ -209,7 +209,7 @@ namespace PaintJ
             //PIE 2     (5)
             dibujador.objeto.añadirPunto(new Punto(-83, 11, 1));
             dibujador.objeto.añadirPunto(new Punto(-81, 1, 1));
-            dibujador.objeto.añadirPunto(new Punto(-78, 3, 1));
+            dibujador.objeto.añadirPunto(new Punto(-78, (float)1.5, 1));
             dibujador.terminarPoligono();
             dibujador.setNombre(5,"PIE 2");
             //BRAZO 1   (6)
@@ -231,62 +231,121 @@ namespace PaintJ
 
             dibujador.nuevaListaDeEfectos();
             dibujador.nuevaListaDeIndices();
-            //ROTAR PIE DELANTERO PARA ENRECTAR
+            dibujador.addIndice(0);dibujador.addIndice(1);dibujador.addIndice(2);
+            dibujador.addIndice(4);dibujador.addIndice(6);dibujador.addIndice(7);
+            Punto centro = dibujador.objeto.getCentroDeListas();
+            //ROTAR PIE DELANTERO PARA ENRECTAR 1
+            dibujador.nuevaListaDeIndices();
             dibujador.addIndice(5);
             dibujador.añadirACola("rotarPunto",dibujador.objeto.listaDePoligonos.ElementAt(5).listaDePuntos.ElementAt(1));
-            dibujador.añadirACola("rotarPunto",-12);
-            //ROTAR PIERNA DELANTERA PARA IGUALAR AL PIE DELANTERO
+            dibujador.añadirACola("rotarPunto",-4);
+            //ROTAR PIERNA DELANTERA PARA IGUALAR AL PIE DELANTERO 1
             dibujador.nuevaListaDeIndices();
             dibujador.addIndice(4);
             dibujador.añadirACola("rotarPunto",dibujador.objeto.listaDePoligonos.ElementAt(4).listaDePuntos.ElementAt(0));
-            dibujador.añadirACola("rotarPunto",10);
-            //ROTAR PIE TRASERO PARA AVANZAR
-            dibujador.nuevaListaDeIndices();
-            dibujador.addIndice(3);
-            dibujador.añadirACola("rotarPunto",dibujador.objeto.listaDePoligonos.ElementAt(3).listaDePuntos.ElementAt(1));
-            dibujador.añadirACola("rotarPunto",-12);
-            //ROTAR PIERNA TRASERA PARA IGUALAR AL PIE TRASERO
-            dibujador.nuevaListaDeIndices();
-            dibujador.addIndice(2);
-            dibujador.añadirACola("rotarPunto",dibujador.objeto.listaDePoligonos.ElementAt(2).listaDePuntos.ElementAt(0));
-            dibujador.añadirACola("rotarPunto",10);
-            //MOVER EL CUERPO A LA ALTURA DEL PIE DELANTERO
+            dibujador.añadirACola("rotarPunto",3);
+            //   MOVER 1
             dibujador.nuevaListaDeIndices();
             dibujador.addIndice(0);dibujador.addIndice(1);dibujador.addIndice(2);
             dibujador.addIndice(4);dibujador.addIndice(6);dibujador.addIndice(7);
-            Punto centro=getCentroDeListas(dibujador.objeto.indices);
-            dibujador.añadirACola("trasladar",new Punto(centro.x,centro.y,1));
+            dibujador.añadirACola("trasladar",new Punto(centro.x+(float)0.1,centro.y-(float)0.1,1));
+            //ROTAR PIE TRASERO PARA AVANZAR 1
+            dibujador.nuevaListaDeIndices();
+            dibujador.addIndice(3);
+            dibujador.añadirACola("rotarPunto",dibujador.objeto.listaDePoligonos.ElementAt(3).listaDePuntos.ElementAt(1));
+            dibujador.añadirACola("rotarPunto",-3);
+            //ROTAR PIERNA TRASERA PARA IGUALAR AL PIE TRASERO 1
+            dibujador.nuevaListaDeIndices();
+            dibujador.addIndice(2);
+            dibujador.añadirACola("rotarPunto",dibujador.objeto.listaDePoligonos.ElementAt(2).listaDePuntos.ElementAt(0));
+            dibujador.añadirACola("rotarPunto",2);
+            //ROTAR BRAZO TRASERO 1
+            dibujador.nuevaListaDeIndices();
+            dibujador.addIndice(6);
+            dibujador.añadirACola("rotarPunto",dibujador.objeto.listaDePoligonos.ElementAt(6).listaDePuntos.ElementAt(0));
+            dibujador.añadirACola("rotarPunto",(float)-0.5);
+            //ROTAR BRAZO DELANTERO 1
+            dibujador.nuevaListaDeIndices();
+            dibujador.addIndice(7);
+            dibujador.añadirACola("rotarPunto",dibujador.objeto.listaDePoligonos.ElementAt(7).listaDePuntos.ElementAt(0));
+            dibujador.añadirACola("rotarPunto",5);
+
+            //ROTAR PIE DELANTERO PARA ENRECTAR 2
+            dibujador.nuevaListaDeIndices();
+            dibujador.addIndice(5);
+            dibujador.añadirACola("rotarPunto",dibujador.objeto.listaDePoligonos.ElementAt(5).listaDePuntos.ElementAt(1));
+            dibujador.añadirACola("rotarPunto",-4);
+            //ROTAR PIERNA DELANTERA PARA IGUALAR AL PIE DELANTERO 2
+            dibujador.nuevaListaDeIndices();
+            dibujador.addIndice(4);
+            dibujador.añadirACola("rotarPunto",dibujador.objeto.listaDePoligonos.ElementAt(4).listaDePuntos.ElementAt(0));
+            dibujador.añadirACola("rotarPunto",4);
+            //   MOVER 2
+            dibujador.nuevaListaDeIndices();
+            dibujador.addIndice(0);dibujador.addIndice(1);dibujador.addIndice(2);
+            dibujador.addIndice(4);dibujador.addIndice(6);dibujador.addIndice(7);
+            dibujador.añadirACola("trasladar",new Punto(centro.x+(float)0.3,centro.y-(float)0.3,1));
+            //ROTAR PIE TRASERO PARA AVANZAR 2
+            dibujador.nuevaListaDeIndices();
+            dibujador.addIndice(3);
+            dibujador.añadirACola("rotarPunto",dibujador.objeto.listaDePoligonos.ElementAt(3).listaDePuntos.ElementAt(1));
+            dibujador.añadirACola("rotarPunto",-4);
+            //ROTAR PIERNA TRASERA PARA IGUALAR AL PIE TRASERO 2
+            dibujador.nuevaListaDeIndices();
+            dibujador.addIndice(2);
+            dibujador.añadirACola("rotarPunto",dibujador.objeto.listaDePoligonos.ElementAt(2).listaDePuntos.ElementAt(0));
+            dibujador.añadirACola("rotarPunto",2);
+            //ROTAR BRAZO TRASERO 2
+            dibujador.nuevaListaDeIndices();
+            dibujador.addIndice(6);
+            dibujador.añadirACola("rotarPunto",dibujador.objeto.listaDePoligonos.ElementAt(6).listaDePuntos.ElementAt(0));
+            dibujador.añadirACola("rotarPunto",(float)-0.5);
+            //ROTAR BRAZO DELANTERO 2
+            dibujador.nuevaListaDeIndices();
+            dibujador.addIndice(7);
+            dibujador.añadirACola("rotarPunto",dibujador.objeto.listaDePoligonos.ElementAt(7).listaDePuntos.ElementAt(0));
+            dibujador.añadirACola("rotarPunto",5);
+
+            //ROTAR PIE DELANTERO PARA ENRECTAR 3
+            dibujador.nuevaListaDeIndices();
+            dibujador.addIndice(5);
+            dibujador.añadirACola("rotarPunto",dibujador.objeto.listaDePoligonos.ElementAt(5).listaDePuntos.ElementAt(1));
+            dibujador.añadirACola("rotarPunto",-4);
+            //ROTAR PIERNA DELANTERA PARA IGUALAR AL PIE DELANTERO 3
+            dibujador.nuevaListaDeIndices();
+            dibujador.addIndice(4);
+            dibujador.añadirACola("rotarPunto",dibujador.objeto.listaDePoligonos.ElementAt(4).listaDePuntos.ElementAt(0));
+            dibujador.añadirACola("rotarPunto",3);
+            //   MOVER 3
+            dibujador.nuevaListaDeIndices();
+            dibujador.addIndice(0);dibujador.addIndice(1);dibujador.addIndice(2);
+            dibujador.addIndice(4);dibujador.addIndice(6);dibujador.addIndice(7);
+            dibujador.añadirACola("trasladar",new Punto(centro.x+(float)0.5,centro.y-(float)0.5,1));
+            //ROTAR PIE TRASERO PARA AVANZAR 3
+            dibujador.nuevaListaDeIndices();
+            dibujador.addIndice(3);
+            dibujador.añadirACola("rotarPunto",dibujador.objeto.listaDePoligonos.ElementAt(3).listaDePuntos.ElementAt(1));
+            dibujador.añadirACola("rotarPunto",-3);
+            //ROTAR PIERNA TRASERA PARA IGUALAR AL PIE TRASERO 3
+            dibujador.nuevaListaDeIndices();
+            dibujador.addIndice(2);
+            dibujador.añadirACola("rotarPunto",dibujador.objeto.listaDePoligonos.ElementAt(2).listaDePuntos.ElementAt(0));
+            dibujador.añadirACola("rotarPunto",2);
+            //ROTAR BRAZO TRASERO 3
+            dibujador.nuevaListaDeIndices();
+            dibujador.addIndice(6);
+            dibujador.añadirACola("rotarPunto",dibujador.objeto.listaDePoligonos.ElementAt(6).listaDePuntos.ElementAt(0));
+            dibujador.añadirACola("rotarPunto",(float)-0.5);
+            //ROTAR BRAZO DELANTERO 3
+            dibujador.nuevaListaDeIndices();
+            dibujador.addIndice(7);
+            dibujador.añadirACola("rotarPunto",dibujador.objeto.listaDePoligonos.ElementAt(7).listaDePuntos.ElementAt(0));
+            dibujador.añadirACola("rotarPunto",5);
             
             timer.Enabled=true;i=1;
-            actualizarListaDeEfectos();*/
+            actualizarListaDeEfectos();
         }
-        public Punto getCentroDeListas(LinkedList<Poligono> lista){
-            Punto punto;Poligono poligono;
-            float menorEnX = float.MaxValue;
-            float menorEnY = float.MaxValue;
-            float menorEnZ = float.MaxValue;
-            float mayorEnX = float.MinValue;
-            float mayorEnY = float.MinValue;
-            float mayorEnZ = float.MinValue;
-            for (int j = 1; j <= lista.Count; j++)
-            {
-                poligono=dibujador.objeto.listaDePoligonos.ElementAt(j-1);
-                for (int i = 1; i <= poligono.listaDePuntos.Count; i++)
-                {
-                    punto = poligono.listaDePuntos.ElementAt(i-1);
-                    menorEnX = punto.x < menorEnX ? punto.x : menorEnX;
-                    menorEnY = punto.y < menorEnY ? punto.y : menorEnY;
-                    menorEnZ = punto.z < menorEnZ ? punto.z : menorEnZ;
-                    mayorEnX = punto.x > mayorEnX ? punto.x : mayorEnX;
-                    mayorEnY = punto.y > mayorEnY ? punto.y : mayorEnY;
-                    mayorEnZ = punto.z > mayorEnZ ? punto.z : mayorEnZ;
-                }
-            }
-            mayorEnX = (float)(((float)(mayorEnX + menorEnX)) / 2);
-            mayorEnY = (float)(((float)(mayorEnY + menorEnY)) / 2);
-            mayorEnZ = (float)(((float)(mayorEnZ + menorEnZ)) / 2);
-            return new Punto(mayorEnX, mayorEnY, mayorEnZ);
-        }
+
         private void abrirToolStripMenuItem_Click(object sender, EventArgs e)
         {
             String resultado = "";
