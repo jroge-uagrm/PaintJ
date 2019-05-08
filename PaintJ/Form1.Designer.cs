@@ -66,15 +66,19 @@
             this.cualquierPuntoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.borrarUltimaLineaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.iniciarDetenerAnimacionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aviso = new System.Windows.Forms.Label();
-            this.listaDePoligonos = new System.Windows.Forms.CheckedListBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.poligonoBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.label5 = new System.Windows.Forms.Label();
-            this.listaDeEfectos = new System.Windows.Forms.CheckedListBox();
             this.iniciarGrabacionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.terminarGrabacionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reproducirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.abrirAnimacionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.guardarAnimacionToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.borrarUltimaAnimacionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aviso = new System.Windows.Forms.Label();
+            this.listaDePoligonos = new System.Windows.Forms.CheckedListBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.listaDeEfectos = new System.Windows.Forms.CheckedListBox();
+            this.timer = new System.Windows.Forms.Timer(this.components);
+            this.poligonoBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.areaDibujo)).BeginInit();
             this.menuStrip2.SuspendLayout();
@@ -208,7 +212,7 @@
             // 
             // areaDibujo
             // 
-            this.areaDibujo.Location = new System.Drawing.Point(135, 56);
+            this.areaDibujo.Location = new System.Drawing.Point(135, 55);
             this.areaDibujo.Name = "areaDibujo";
             this.areaDibujo.Size = new System.Drawing.Size(595, 454);
             this.areaDibujo.TabIndex = 33;
@@ -257,7 +261,7 @@
             this.iniciarDetenerAnimacionToolStripMenuItem});
             this.menuStrip2.Location = new System.Drawing.Point(132, 28);
             this.menuStrip2.Name = "menuStrip2";
-            this.menuStrip2.Size = new System.Drawing.Size(604, 24);
+            this.menuStrip2.Size = new System.Drawing.Size(484, 24);
             this.menuStrip2.TabIndex = 38;
             this.menuStrip2.Text = "menuStrip2";
             // 
@@ -389,10 +393,55 @@
             this.iniciarDetenerAnimacionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.iniciarGrabacionToolStripMenuItem,
             this.terminarGrabacionToolStripMenuItem,
-            this.reproducirToolStripMenuItem});
+            this.reproducirToolStripMenuItem,
+            this.abrirAnimacionToolStripMenuItem,
+            this.guardarAnimacionToolStripMenuItem1,
+            this.borrarUltimaAnimacionToolStripMenuItem});
             this.iniciarDetenerAnimacionToolStripMenuItem.Name = "iniciarDetenerAnimacionToolStripMenuItem";
             this.iniciarDetenerAnimacionToolStripMenuItem.Size = new System.Drawing.Size(77, 20);
             this.iniciarDetenerAnimacionToolStripMenuItem.Text = "Animacion";
+            // 
+            // iniciarGrabacionToolStripMenuItem
+            // 
+            this.iniciarGrabacionToolStripMenuItem.Name = "iniciarGrabacionToolStripMenuItem";
+            this.iniciarGrabacionToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+            this.iniciarGrabacionToolStripMenuItem.Text = "Iniciar Grabacion";
+            this.iniciarGrabacionToolStripMenuItem.Click += new System.EventHandler(this.iniciarGrabacionToolStripMenuItem_Click);
+            // 
+            // terminarGrabacionToolStripMenuItem
+            // 
+            this.terminarGrabacionToolStripMenuItem.Name = "terminarGrabacionToolStripMenuItem";
+            this.terminarGrabacionToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+            this.terminarGrabacionToolStripMenuItem.Text = "Terminar Grabacion";
+            this.terminarGrabacionToolStripMenuItem.Click += new System.EventHandler(this.terminarGrabacionToolStripMenuItem_Click);
+            // 
+            // reproducirToolStripMenuItem
+            // 
+            this.reproducirToolStripMenuItem.Name = "reproducirToolStripMenuItem";
+            this.reproducirToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+            this.reproducirToolStripMenuItem.Text = "Reproducir";
+            this.reproducirToolStripMenuItem.Click += new System.EventHandler(this.reproducirToolStripMenuItem_Click);
+            // 
+            // abrirAnimacionToolStripMenuItem
+            // 
+            this.abrirAnimacionToolStripMenuItem.Name = "abrirAnimacionToolStripMenuItem";
+            this.abrirAnimacionToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+            this.abrirAnimacionToolStripMenuItem.Text = "Abrir Animacion";
+            this.abrirAnimacionToolStripMenuItem.Click += new System.EventHandler(this.abrirAnimacionToolStripMenuItem_Click);
+            // 
+            // guardarAnimacionToolStripMenuItem1
+            // 
+            this.guardarAnimacionToolStripMenuItem1.Name = "guardarAnimacionToolStripMenuItem1";
+            this.guardarAnimacionToolStripMenuItem1.Size = new System.Drawing.Size(205, 22);
+            this.guardarAnimacionToolStripMenuItem1.Text = "Guardar Animacion";
+            this.guardarAnimacionToolStripMenuItem1.Click += new System.EventHandler(this.guardarAnimacionToolStripMenuItem1_Click);
+            // 
+            // borrarUltimaAnimacionToolStripMenuItem
+            // 
+            this.borrarUltimaAnimacionToolStripMenuItem.Name = "borrarUltimaAnimacionToolStripMenuItem";
+            this.borrarUltimaAnimacionToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+            this.borrarUltimaAnimacionToolStripMenuItem.Text = "Borrar Ultima Animacion";
+            this.borrarUltimaAnimacionToolStripMenuItem.Click += new System.EventHandler(this.borrarUltimaAnimacionToolStripMenuItem_Click);
             // 
             // aviso
             // 
@@ -413,28 +462,25 @@
             this.listaDePoligonos.Name = "listaDePoligonos";
             this.listaDePoligonos.Size = new System.Drawing.Size(124, 169);
             this.listaDePoligonos.TabIndex = 41;
+            this.listaDePoligonos.MouseClick += new System.Windows.Forms.MouseEventHandler(this.listaDePoligonos_MouseClick);
             this.listaDePoligonos.SelectedIndexChanged += new System.EventHandler(this.listaDePoligonos_SelectedIndexChanged);
-            this.listaDePoligonos.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listaDePoligonos_MouseDoubleClick);
+            this.listaDePoligonos.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listaDePoligonos_MouseDoubleClick_1);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(12, 40);
+            this.label4.Location = new System.Drawing.Point(11, 39);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(118, 13);
             this.label4.TabIndex = 42;
             this.label4.Text = "LISTA DE POLIGONOS";
             // 
-            // poligonoBindingSource
-            // 
-            this.poligonoBindingSource.DataSource = typeof(PaintJ.Poligono);
-            // 
             // label5
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(11, 291);
+            this.label5.Location = new System.Drawing.Point(11, 261);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(103, 13);
             this.label5.TabIndex = 44;
@@ -444,31 +490,18 @@
             // 
             this.listaDeEfectos.FormatString = "formato";
             this.listaDeEfectos.FormattingEnabled = true;
-            this.listaDeEfectos.Location = new System.Drawing.Point(8, 310);
+            this.listaDeEfectos.Location = new System.Drawing.Point(9, 277);
             this.listaDeEfectos.Name = "listaDeEfectos";
             this.listaDeEfectos.Size = new System.Drawing.Size(124, 199);
             this.listaDeEfectos.TabIndex = 43;
             // 
-            // iniciarGrabacionToolStripMenuItem
+            // timer
             // 
-            this.iniciarGrabacionToolStripMenuItem.Name = "iniciarGrabacionToolStripMenuItem";
-            this.iniciarGrabacionToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.iniciarGrabacionToolStripMenuItem.Text = "Iniciar Grabacion";
-            this.iniciarGrabacionToolStripMenuItem.Click += new System.EventHandler(this.iniciarGrabacionToolStripMenuItem_Click);
+            this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
-            // terminarGrabacionToolStripMenuItem
+            // poligonoBindingSource
             // 
-            this.terminarGrabacionToolStripMenuItem.Name = "terminarGrabacionToolStripMenuItem";
-            this.terminarGrabacionToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.terminarGrabacionToolStripMenuItem.Text = "Terminar Grabacion";
-            this.terminarGrabacionToolStripMenuItem.Click += new System.EventHandler(this.terminarGrabacionToolStripMenuItem_Click);
-            // 
-            // reproducirToolStripMenuItem
-            // 
-            this.reproducirToolStripMenuItem.Name = "reproducirToolStripMenuItem";
-            this.reproducirToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.reproducirToolStripMenuItem.Text = "Reproducir";
-            this.reproducirToolStripMenuItem.Click += new System.EventHandler(this.reproducirToolStripMenuItem_Click);
+            this.poligonoBindingSource.DataSource = typeof(PaintJ.Poligono);
             // 
             // Form1
             // 
@@ -531,7 +564,6 @@
         private System.Windows.Forms.TextBox avisoTxt;
         private System.Windows.Forms.Button avisoBtn;
         private System.Windows.Forms.CheckBox avisoCheck;
-        private System.Windows.Forms.BindingSource poligonoBindingSource;
         private System.Windows.Forms.MenuStrip menuStrip2;
         private System.Windows.Forms.ToolStripMenuItem traslacionToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem seleccionarPuntoToolStripMenuItem;
@@ -559,6 +591,11 @@
         private System.Windows.Forms.ToolStripMenuItem iniciarGrabacionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem terminarGrabacionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reproducirToolStripMenuItem;
+        private System.Windows.Forms.Timer timer;
+        private System.Windows.Forms.ToolStripMenuItem abrirAnimacionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem guardarAnimacionToolStripMenuItem1;
+        private System.Windows.Forms.BindingSource poligonoBindingSource;
+        private System.Windows.Forms.ToolStripMenuItem borrarUltimaAnimacionToolStripMenuItem;
     }
 }
 

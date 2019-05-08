@@ -1,31 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml.Serialization;
-using static System.Windows.Forms.CheckedListBox;
-
 namespace PaintJ
 {
     [Serializable]
-    public partial class Form1 : Form
-    {
-        Painter dibujador;
-        String efecto;
-        bool puedeDibujar,grabando;
+    public partial class Form1 : Form{
 
+        #region variablesGlobales
+        Painter dibujador;
+        Objeto objetoInicial;
+        string efecto;
+        bool puedeDibujar,grabando;
+        int i;
+        #endregion
+
+        #region inicializadores
         public Form1()
         {
             InitializeComponent();
         }
-
         public int tamañoHDondeDibujar()
         {
             return areaDibujo.Width;
@@ -38,7 +34,6 @@ namespace PaintJ
         {
             return areaDibujo.CreateGraphics();
         }
-
         private void Form1_Load(object sender, EventArgs e)
         {
             textBox1.Text = tamañoHDondeDibujar().ToString();
@@ -51,7 +46,6 @@ namespace PaintJ
             efecto = "nada";
             modificarElementos(false, false, false, "", "", "");
         }
-
         private void Form1_SizeChanged(object sender, EventArgs e)
         {
             areaDibujo.Height = Height - menuStrip1.Height - 45 - menuStrip2.Height;
@@ -69,13 +63,11 @@ namespace PaintJ
                 dibujador.pintar();
             }
         }
-
         private void Form1_ResizeEnd(object sender, EventArgs e)
         {
             textBox1.Text = tamañoHDondeDibujar().ToString();
             textBox2.Text = tamañoVDondeDibujar().ToString();
         }
-
         private void areaDibujo_MouseMove(object sender, MouseEventArgs e)
         {
             dibujador.coordenadas(e.X, e.Y);
@@ -84,7 +76,9 @@ namespace PaintJ
             textBox3.Text = dibujador.a.ToString();
             textBox4.Text = dibujador.b.ToString();
         }
+        #endregion
 
+        #region clicks
         private void areaDibujo_MouseClick(object sender, MouseEventArgs e)
         {
             Refresh();
@@ -97,8 +91,8 @@ namespace PaintJ
                     aviso.Text = "Poligono trasladado";
                     if (grabando)
                     {
-                        dibujador.añadirACola(efecto,punto);
-                        actualizarListDeEfectos();
+                        dibujador.añadirACola(efecto, punto);
+                        actualizarListaDeEfectos();
                     }
                     break;
                 case "rotarPunto":
@@ -107,7 +101,7 @@ namespace PaintJ
                     if (grabando)
                     {
                         dibujador.añadirACola(efecto, punto);
-                        actualizarListDeEfectos();
+                        actualizarListaDeEfectos();
                     }
                     break;
                 case "escalarPunto":
@@ -116,18 +110,13 @@ namespace PaintJ
                     if (grabando)
                     {
                         dibujador.añadirACola(efecto, punto);
-                        actualizarListDeEfectos();
+                        actualizarListaDeEfectos();
                     }
                     break;
                 case "reflexionRecta":
                     if (dibujador.puntoReflexionRecta(false))
                     {
                         modificarElementos(false, true, false, "1", "REFLEXION", "");
-                        if (grabando)
-                        {
-                            dibujador.añadirACola(efecto,dibujador.poligonoAux);
-                            actualizarListDeEfectos();
-                        }
                     }
                     dibujador.pintar();
                     break;
@@ -156,9 +145,9 @@ namespace PaintJ
             {
                 efecto = "nada";
                 modificarElementos(false, false, false, "", "", "");
+                desmarcarlistaDeEfectos();
             }
         }
-
         private void areaDibujo_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             if (puedeDibujar)
@@ -167,7 +156,6 @@ namespace PaintJ
                 actualizarListaDePoligonos();
             }
         }
-
         private void nuevoToolStripMenuItem_Click(object sender, EventArgs e)
         {
             areaDibujo.Refresh();
@@ -177,11 +165,128 @@ namespace PaintJ
                 tamañoVDondeDibujar());
             dibujador.pintarEje();
             listaDePoligonos.Items.Clear();
+            listaDeEfectos.Items.Clear();
             puedeDibujar = true;
             grabando = false;
+            timer.Enabled = false;
             aviso.Text = "Puede empezar a dibujar";
-        }
+            //ANIMACION
+            listaDePoligonos.Items.Clear();
+            listaDeEfectos.Items.Clear();
+            puedeDibujar = true;
+            grabando = false;
+            timer.Enabled = false;
+            aviso.Text = "Puede empezar a dibujar";
+            //CABEZA    (0)
+            dibujador.objeto.añadirPunto(new Punto(-90, 50, 1));
+            dibujador.objeto.añadirPunto(new Punto(-80, 50, 1));
+            dibujador.objeto.añadirPunto(new Punto(-80, 40, 1));
+            dibujador.objeto.añadirPunto(new Punto(-90, 40, 1));
+            dibujador.objeto.añadirPunto(new Punto(-90, 50, 1));
+            dibujador.terminarPoligono();
+            dibujador.setNombre(0,"CABEZA");
+            //CUERPO    (1)
+            dibujador.objeto.añadirPunto(new Punto(-85, 40, 1));
+            dibujador.objeto.añadirPunto(new Punto(-85, 20, 1));
+            dibujador.terminarPoligono();
+            dibujador.setNombre(1,"CUERPO");
+            //PIERNA 1  (2)
+            dibujador.objeto.añadirPunto(new Punto(-85, 20, 1));
+            dibujador.objeto.añadirPunto(new Punto(-87, 11, 1));
+            dibujador.terminarPoligono();
+            dibujador.setNombre(2,"PIERNA 1");
+            //PIE 1     (3)
+            dibujador.objeto.añadirPunto(new Punto(-87, 11, 1));
+            dibujador.objeto.añadirPunto(new Punto(-91, 3, 1));
+            dibujador.objeto.añadirPunto(new Punto(-88, 1, 1));
+            dibujador.terminarPoligono();
+            dibujador.setNombre(3,"PIE 1");
+            //PIERNA 2  (4)
+            dibujador.objeto.añadirPunto(new Punto(-85, 20, 1));
+            dibujador.objeto.añadirPunto(new Punto(-83, 11, 1));
+            dibujador.terminarPoligono();
+            dibujador.setNombre(4,"PIERNA 2");
+            //PIE 2     (5)
+            dibujador.objeto.añadirPunto(new Punto(-83, 11, 1));
+            dibujador.objeto.añadirPunto(new Punto(-81, 1, 1));
+            dibujador.objeto.añadirPunto(new Punto(-78, 3, 1));
+            dibujador.terminarPoligono();
+            dibujador.setNombre(5,"PIE 2");
+            //BRAZO 1   (6)
+            dibujador.objeto.añadirPunto(new Punto(-85, 35, 1));
+            dibujador.objeto.añadirPunto(new Punto(-87, 26, 1));
+            dibujador.objeto.añadirPunto(new Punto(-86, 21, 1));
+            dibujador.terminarPoligono();
+            dibujador.setNombre(6,"BRAZO 1");
+            //BRAZO 2   (7)
+            dibujador.objeto.añadirPunto(new Punto(-85, 35, 1));
+            dibujador.objeto.añadirPunto(new Punto(-84, 25, 1));
+            dibujador.objeto.añadirPunto(new Punto(-82, 21, 1));
+            dibujador.terminarPoligono();
+            dibujador.setNombre(07,"BRAZO 2");
+            dibujador.pintar();
+            actualizarListaDePoligonos();
+            
+            //BASE TERMINADA
 
+            dibujador.nuevaListaDeEfectos();
+            dibujador.nuevaListaDeIndices();
+            //ROTAR PIE DELANTERO PARA ENRECTAR
+            dibujador.addIndice(5);
+            dibujador.añadirACola("rotarPunto",dibujador.objeto.listaDePoligonos.ElementAt(5).listaDePuntos.ElementAt(1));
+            dibujador.añadirACola("rotarPunto",-12);
+            //ROTAR PIERNA DELANTERA PARA IGUALAR AL PIE DELANTERO
+            dibujador.nuevaListaDeIndices();
+            dibujador.addIndice(4);
+            dibujador.añadirACola("rotarPunto",dibujador.objeto.listaDePoligonos.ElementAt(4).listaDePuntos.ElementAt(0));
+            dibujador.añadirACola("rotarPunto",10);
+            //ROTAR PIE TRASERO PARA AVANZAR
+            dibujador.nuevaListaDeIndices();
+            dibujador.addIndice(3);
+            dibujador.añadirACola("rotarPunto",dibujador.objeto.listaDePoligonos.ElementAt(3).listaDePuntos.ElementAt(1));
+            dibujador.añadirACola("rotarPunto",-12);
+            //ROTAR PIERNA TRASERA PARA IGUALAR AL PIE TRASERO
+            dibujador.nuevaListaDeIndices();
+            dibujador.addIndice(2);
+            dibujador.añadirACola("rotarPunto",dibujador.objeto.listaDePoligonos.ElementAt(2).listaDePuntos.ElementAt(0));
+            dibujador.añadirACola("rotarPunto",10);
+            //MOVER EL CUERPO A LA ALTURA DEL PIE DELANTERO
+            dibujador.nuevaListaDeIndices();
+            dibujador.addIndice(0);dibujador.addIndice(1);dibujador.addIndice(2);
+            dibujador.addIndice(4);dibujador.addIndice(6);dibujador.addIndice(7);
+            Punto centro=getCentroDeListas(dibujador.objeto.indices);
+            dibujador.añadirACola("trasladar",new Punto(centro.x,centro.y,1));
+            
+            timer.Enabled=true;i=1;
+            actualizarListaDeEfectos();*/
+        }
+        public Punto getCentroDeListas(LinkedList<Poligono> lista){
+            Punto punto;Poligono poligono;
+            float menorEnX = float.MaxValue;
+            float menorEnY = float.MaxValue;
+            float menorEnZ = float.MaxValue;
+            float mayorEnX = float.MinValue;
+            float mayorEnY = float.MinValue;
+            float mayorEnZ = float.MinValue;
+            for (int j = 1; j <= lista.Count; j++)
+            {
+                poligono=dibujador.objeto.listaDePoligonos.ElementAt(j-1);
+                for (int i = 1; i <= poligono.listaDePuntos.Count; i++)
+                {
+                    punto = poligono.listaDePuntos.ElementAt(i-1);
+                    menorEnX = punto.x < menorEnX ? punto.x : menorEnX;
+                    menorEnY = punto.y < menorEnY ? punto.y : menorEnY;
+                    menorEnZ = punto.z < menorEnZ ? punto.z : menorEnZ;
+                    mayorEnX = punto.x > mayorEnX ? punto.x : mayorEnX;
+                    mayorEnY = punto.y > mayorEnY ? punto.y : mayorEnY;
+                    mayorEnZ = punto.z > mayorEnZ ? punto.z : mayorEnZ;
+                }
+            }
+            mayorEnX = (float)(((float)(mayorEnX + menorEnX)) / 2);
+            mayorEnY = (float)(((float)(mayorEnY + menorEnY)) / 2);
+            mayorEnZ = (float)(((float)(mayorEnZ + menorEnZ)) / 2);
+            return new Punto(mayorEnX, mayorEnY, mayorEnZ);
+        }
         private void abrirToolStripMenuItem_Click(object sender, EventArgs e)
         {
             String resultado = "";
@@ -203,10 +308,12 @@ namespace PaintJ
                             Refresh();
                             nuevoToolStripMenuItem_Click(sender, e);
                             dibujador.setObjeto(obj);
+                            dibujador.addIndice(-1);
                             dibujador.pintar();
                             actualizarListaDePoligonos();
                             resultado = "ABIERTO CORRECTAMENTE";
                             grabando = false;
+                            timer.Enabled = false;
                         }
                     }
                     else
@@ -224,7 +331,6 @@ namespace PaintJ
                 aviso.Text = resultado;
             }
         }
-
         private void guardarToolStripMenuItem_Click(object sender, EventArgs e)
         {
             String resultado = "";
@@ -268,74 +374,12 @@ namespace PaintJ
                 aviso.Text = resultado;
             }
         }
-
-        private void modificarElementos(
-            bool a, bool b, bool c,
-            string a1, string b1, string c1)
-        {
-            if (a) { avisoTxt.BringToFront(); } else { avisoTxt.SendToBack(); }
-            avisoTxt.Text = a1;
-            avisoTxt.Location = new Point(
-                    aviso.Location.X+aviso.Width,
-                    avisoTxt.Location.Y);
-
-            if (b) { avisoBtn.BringToFront(); } else { avisoBtn.SendToBack(); }
-            avisoBtn.Text = b1;
-            avisoBtn.Location = new Point(
-                    avisoTxt.Location.X + avisoTxt.Width,
-                    avisoBtn.Location.Y);
-
-            if (c) { avisoCheck.BringToFront(); } else { avisoCheck.SendToBack(); }
-            avisoCheck.Text = c1;
-            avisoCheck.Checked = false;
-            avisoCheck.Location = new Point(
-                    avisoBtn.Location.X + avisoBtn.Width,
-                    avisoCheck.Location.Y);
-        }
-
-        private bool esPosible()
-        {
-            if (dibujador.noEstaVacio())
-            {
-                if (dibujador.objeto.poligonoTerminado)
-                {
-                    return true;
-                }
-                else
-                {
-                    aviso.Text = "Debe terminar el poligono";
-                }
-            }
-            else
-            {
-                aviso.Text = "No hay dibujo";
-            }
-            return false;
-        }
-
-        private void borrarUltimaLineaToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!grabando)
-            {
-                if (dibujador.borrarUltimoPunto())
-                {
-                    Refresh();
-                    dibujador.pintar();
-                    actualizarListaDePoligonos();
-                }
-            }
-            else
-            {
-                aviso.Text = "Grabando, no puede borrar";
-            }
-        }
-
         private void avisoCheck_CheckedChanged(object sender, EventArgs e)
         {
             switch (efecto)
             {
                 case "escalarOrigen":
-                    avisoCheck.Text = avisoCheck.Checked ? "Veces mas Pequeño": "Veces mas Grande";
+                    avisoCheck.Text = avisoCheck.Checked ? "Veces mas Pequeño" : "Veces mas Grande";
                     break;
                 case "escalarEje":
                     avisoCheck.Text = avisoCheck.Checked ? "Veces mas Pequeño" : "Veces mas Grande";
@@ -347,28 +391,26 @@ namespace PaintJ
                     break;
             }
         }
-
         private void avisoBtn_Click(object sender, EventArgs e)
         {
             Refresh();
-            Punto punto;
             double numero = 0;
             try
             {
-                if (efecto.CompareTo("nuevoNombre") != 0)
+                if (efecto.CompareTo("nuevoNombre") != 0 && efecto.CompareTo("reproducir") != 0)
                 {
                     numero = Convert.ToDouble(avisoTxt.Text.ToString());
                 }
                 switch (efecto)
                 {
-                    case "rotarMismoEje":
+                    case "rotarEje":
                         numero = avisoCheck.Checked ? numero * (-1) : numero;
                         dibujador.rotarEje(numero);
                         aviso.Text = "Poligono rotado";
                         if (grabando)
                         {
                             dibujador.añadirACola(efecto, (float)numero);
-                            actualizarListDeEfectos();
+                            actualizarListaDeEfectos();
                         }
                         break;
                     case "rotarOrigen":
@@ -378,7 +420,7 @@ namespace PaintJ
                         if (grabando)
                         {
                             dibujador.añadirACola(efecto, (float)numero);
-                            actualizarListDeEfectos();
+                            actualizarListaDeEfectos();
                         }
                         break;
                     case "rotarPunto":
@@ -388,7 +430,7 @@ namespace PaintJ
                         if (grabando)
                         {
                             dibujador.añadirACola(efecto, (float)numero);
-                            actualizarListDeEfectos();
+                            actualizarListaDeEfectos();
                         }
                         break;
                     case "escalarEje":
@@ -398,7 +440,7 @@ namespace PaintJ
                         if (grabando)
                         {
                             dibujador.añadirACola(efecto, (float)numero);
-                            actualizarListDeEfectos();
+                            actualizarListaDeEfectos();
                         }
                         break;
                     case "escalarOrigen":
@@ -408,12 +450,17 @@ namespace PaintJ
                         if (grabando)
                         {
                             dibujador.añadirACola(efecto, (float)numero);
-                            actualizarListDeEfectos();
+                            actualizarListaDeEfectos();
                         }
                         break;
                     case "reflexionRecta":
                         dibujador.puntoReflexionRecta(true);
                         aviso.Text = "Reflexion completa";
+                        if (grabando)
+                        {
+                            dibujador.añadirACola(efecto, dibujador.poligonoAux);
+                            actualizarListaDeEfectos();
+                        }
                         break;
                     case "escalarPunto":
                         numero = avisoCheck.Checked ? 1 / numero : numero;
@@ -422,7 +469,7 @@ namespace PaintJ
                         if (grabando)
                         {
                             dibujador.añadirACola(efecto, (float)numero);
-                            actualizarListDeEfectos();
+                            actualizarListaDeEfectos();
                         }
                         break;
                     case "nuevoNombre":
@@ -446,6 +493,9 @@ namespace PaintJ
                             throw new Exception("Debe seleccionar un poligono");
                         }
                         break;
+                    case "reproducir":
+                        aviso.Text = "Deteniendo...";
+                        break;
                     default:
                         aviso.Text = "NADA";
                         break;
@@ -455,14 +505,261 @@ namespace PaintJ
             }
             catch (Exception ex)
             {
-                MessageBox.Show("ERROR : "+ex.Message);
+                MessageBox.Show("ERROR : " + ex.Message);
             }
             finally
             {
                 dibujador.pintar();
             }
-        }        
-        
+        }
+        private void listaDePoligonos_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            dibujador.addIndice(-1);
+            foreach (int indexChecked in listaDePoligonos.CheckedIndices)
+            {
+                listaDePoligonos.SetItemChecked(indexChecked, false);
+            }
+        }
+        private void guardarAnimacionToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            String resultado = "";
+            try
+            {
+                if (dibujador.listaDeEfectos.Count > 0)
+                {
+                    using (System.Windows.Forms.SaveFileDialog dialogo =
+                    new System.Windows.Forms.SaveFileDialog())
+                    {
+                        if (dialogo.ShowDialog() ==
+                            System.Windows.Forms.DialogResult.OK)
+                        {
+                            using (Stream st = File.Open(
+                               dialogo.FileName, FileMode.Create))
+                            {
+                                var binfor = new System.Runtime.
+                                    Serialization.Formatters.
+                                    Binary.BinaryFormatter();
+                                binfor.Serialize(st, dibujador.listaDeEfectos);
+                                resultado = "GUARDADO CORRECTAMENTE";
+                            }
+                        }
+                        else
+                        {
+                            resultado = "OPERACION CANCELADA";
+                        }
+                    }
+                }
+                else
+                {
+                    resultado = "NADA PARA GUARDAR";
+                }
+            }
+            catch (Exception ex)
+            {
+                resultado = "ERROR AL GUARDAR EL ARCHIVO : " + ex.Message;
+                MessageBox.Show("ERROR AL GUARDAR EL ARCHIVO : " + ex.Message);
+            }
+            finally
+            {
+                aviso.Text = resultado;
+            }
+        }
+        private void abrirAnimacionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            String resultado = "";
+            try
+            {
+                using (System.Windows.Forms.OpenFileDialog dialogo =
+                    new System.Windows.Forms.OpenFileDialog())
+                {
+                    if (dialogo.ShowDialog() ==
+                        System.Windows.Forms.DialogResult.OK)
+                    {
+                        using (Stream st = File.Open(
+                            dialogo.FileName, FileMode.Open))
+                        {
+                            var binfor = new System.Runtime.
+                                Serialization.Formatters.
+                                Binary.BinaryFormatter();
+                            LinkedList<Efecto> obj = (LinkedList<Efecto>)binfor.Deserialize(st);
+                            dibujador.listaDeEfectos = obj;
+                            actualizarListaDeEfectos();
+                            resultado = "ABIERTO CORRECTAMENTE";
+                            objetoInicial = new Objeto(dibujador.objeto);
+                            grabando = false;
+                            timer.Enabled = false;
+                        }
+                    }
+                    else
+                    {
+                        resultado = "OPERACION CANCELADA";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                resultado = "ERROR AL ABRIR EL ARCHIVO : " + ex.Message;
+                MessageBox.Show("ERROR AL ABRIR EL ARCHIVO : " + ex.Message);
+            }
+            finally
+            {
+                aviso.Text = resultado;
+            }
+        }
+        #endregion
+
+        #region modificadores
+        private void modificarElementos(bool a, bool b, bool c,string a1, string b1, string c1)
+        {
+            if (a) { avisoTxt.BringToFront(); } else { avisoTxt.SendToBack(); }
+            avisoTxt.Text = a1;
+            avisoTxt.Location = new Point(
+                    aviso.Location.X+aviso.Width,
+                    avisoTxt.Location.Y);
+
+            if (b) { avisoBtn.BringToFront(); } else { avisoBtn.SendToBack(); }
+            avisoBtn.Text = b1;
+            avisoBtn.Location = new Point(
+                    avisoTxt.Location.X + avisoTxt.Width,
+                    avisoBtn.Location.Y);
+
+            if (c) { avisoCheck.BringToFront(); } else { avisoCheck.SendToBack(); }
+            avisoCheck.Text = c1;
+            avisoCheck.Checked = false;
+            avisoCheck.Location = new Point(
+                    avisoBtn.Location.X + avisoBtn.Width,
+                    avisoCheck.Location.Y);
+        }
+        private void borrarUltimaLineaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!grabando)
+            {
+                if (dibujador.borrarUltimoPunto())
+                {
+                    Refresh();
+                    dibujador.pintar();
+                    actualizarListaDePoligonos();
+                }
+            }
+            else
+            {
+                aviso.Text = "Grabando, no puede borrar";
+            }
+        }
+        private void actualizarListaDePoligonos()
+        {
+            listaDePoligonos.Items.Clear();
+            int cantidadDePoligonos = dibujador.getCantidadDePoligonos();
+            for (int i = 1; i <= cantidadDePoligonos; i++)
+            {
+                listaDePoligonos.Items.Add(dibujador.objeto.getPoligono(i - 1));
+            }
+        }
+        private void actualizarListaDeEfectos()
+        {
+            listaDeEfectos.Items.Clear();
+            int cantidadDeEfectos = dibujador.listaDeEfectos.Count;
+            for (int i = 1; i <= cantidadDeEfectos; i++)
+            {
+                listaDeEfectos.Items.Add(dibujador.listaDeEfectos.ElementAt(i - 1));
+            }
+        }
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            Efecto efecto;
+            aviso.Text = "Detenido";//---------
+            if (i > dibujador.listaDeEfectos.Count
+                && aviso.Text.CompareTo("Detenido") == 0)//-----
+            {
+                i = 0;
+                //dibujador.setObjeto(objetoInicial);
+                //if (aviso.Text.CompareTo("Deteniendo...") == 0){
+                    aviso.Text = "Detenido";
+                    timer.Enabled = false;
+                //}
+            }
+            else
+            {
+                efecto = dibujador.getEfecto(i - 1);
+                dibujador.objeto.indices = efecto.indices;
+                switch (efecto.nombre)
+                {
+                    case "trasladar":
+                        dibujador.objeto.trasladarPoligono(efecto.punto);
+                        break;
+                    case "rotarEje":
+                        dibujador.objeto.rotarEje(efecto.numero);
+                        break;
+                    case "rotarOrigen":
+                        dibujador.objeto.rotarOrigen(efecto.numero);
+                        break;
+                    case "rotarPunto":
+                        dibujador.objeto.setPuntoParaRotarPunto(efecto.punto);
+                        i++;
+                        efecto = dibujador.getEfecto(i - 1);
+                        dibujador.objeto.rotarPunto(efecto.numero);
+                        break;
+                    case "ejeX":
+                        dibujador.objeto.reflexionX();
+                        break;
+                    case "ejeY":
+                        dibujador.objeto.reflexionY();
+                        break;
+                    case "reflexionRecta":
+                        dibujador.objeto.reflexionRecta(efecto.poligono);
+                        break;
+                    case "escalarEje":
+                        dibujador.objeto.escalarEje(efecto.numero);
+                        break;
+                    case "escalarOrigen":
+                        dibujador.objeto.escalarOrigen(efecto.numero);
+                        break;
+                    case "escalarPunto":
+                        dibujador.objeto.escalarPunto(efecto.punto);
+                        i++;
+                        efecto = dibujador.getEfecto(i - 1);
+                        dibujador.objeto.escalarPunto(efecto.numero);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            areaDibujo.Refresh();
+            dibujador.pintar();
+            i++;
+        }
+        private void desmarcarlistaDeEfectos()
+        {
+            foreach (int indice in listaDeEfectos.SelectedIndices)
+            {
+                listaDeEfectos.SetItemChecked(indice, false);
+            }
+        }
+        #endregion
+
+        #region condiciones
+        private bool esPosible()
+        {
+            if (dibujador.noEstaVacio())
+            {
+                if (dibujador.objeto.poligonoTerminado)
+                {
+                    return true;
+                }
+                else
+                {
+                    aviso.Text = "Debe terminar el poligono";
+                }
+            }
+            else
+            {
+                aviso.Text = "No hay dibujo";
+            }
+            return false;
+        }
+        #endregion
+
+        #region efectos
         private void seleccionarPuntoToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (esPosible())
@@ -472,29 +769,34 @@ namespace PaintJ
                 modificarElementos(false, false, false, "", "", "");
             }
         }
-
         private void puntoAleatorioToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             if (esPosible())
             {
                 Refresh();
-                dibujador.trasladarAleatorioPoligono();
+                Random rnd = new Random();
+                Punto aleatorio=new Punto(
+                    (float)rnd.Next(-100, 100), (float)rnd.Next(-100, 100), 1);
+                dibujador.trasladarPoligono(aleatorio);
+                if (grabando)
+                {
+                    dibujador.añadirACola("trasladar",aleatorio);
+                    actualizarListaDeEfectos();
+                }
                 dibujador.pintar();
                 aviso.Text = "Poligono trasladado";
                 modificarElementos(false, false, false, "", "", "");
             }
         }
-
         private void mismoEjeToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             if (esPosible())
             {
                 aviso.Text = "Introducir grados a rotar :";
                 modificarElementos(true, true, true, "", "ROTAR", "Sentido HORARIO");
-                efecto = "rotarMismoEje";
+                efecto = "rotarEje";
             }
         }
-
         private void origenToolStripMenuItem2_Click(object sender, EventArgs e)
         {
             if (esPosible())
@@ -504,7 +806,6 @@ namespace PaintJ
                 efecto = "rotarOrigen";
             }
         }
-
         private void cualquierPuntoToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             if (esPosible())
@@ -514,11 +815,14 @@ namespace PaintJ
                 modificarElementos(false, false, false, "", "", "");
             }
         }
-
         private void ejeXToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             if (esPosible())
             {
+                if (grabando)
+                {
+                    dibujador.añadirACola("reflexionX",true);
+                }
                 dibujador.reflexionX();
                 Refresh();
                 dibujador.pintar();
@@ -526,7 +830,6 @@ namespace PaintJ
                 modificarElementos(false, false, false, "", "", "");
             }
         }
-
         private void ejeYToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             if (esPosible())
@@ -538,7 +841,6 @@ namespace PaintJ
                 modificarElementos(false, false, false, "", "", "");
             }
         }
-
         private void rectaCualquieraToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (esPosible())
@@ -548,7 +850,6 @@ namespace PaintJ
                 modificarElementos(false, false, false, "", "", "");
             }
         }
-
         private void mismoEjeToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             if (esPosible())
@@ -558,7 +859,6 @@ namespace PaintJ
                 modificarElementos(true, true, true, "", "ESCALAR", "Veces mas Grande");
             }
         }
-
         private void origenToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             if (esPosible())
@@ -568,7 +868,6 @@ namespace PaintJ
                 modificarElementos(true, true, true, "", "ESCALAR", "Veces mas Grande");
             }
         }
-
         private void cualquierPuntoToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (esPosible())
@@ -578,42 +877,6 @@ namespace PaintJ
                 modificarElementos(false, false, false, "", "", "");
             }
         }
-
-        private void listaDePoligonos_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            dibujador.objeto.setPuntoEnCentro();
-            int indiceDePoligonoSeleccionado = listaDePoligonos.SelectedIndex;
-            listaDePoligonos.SetItemChecked(indiceDePoligonoSeleccionado, true);
-            dibujador.setIndice(indiceDePoligonoSeleccionado);
-            foreach (int indexChecked in listaDePoligonos.CheckedIndices)
-            {
-                if (indexChecked != indiceDePoligonoSeleccionado)
-                {
-                    listaDePoligonos.SetItemChecked(indexChecked, false);
-                }
-            }
-        }
-
-        private void actualizarListaDePoligonos()
-        {
-            listaDePoligonos.Items.Clear();
-            int cantidadDePoligonos = dibujador.cantidadDePoligonos();
-            for(int i = 1; i <= cantidadDePoligonos; i++)
-            {
-                listaDePoligonos.Items.Add(dibujador.objeto.getPoligono(i-1));
-            }
-        }
-
-        private void actualizarListDeEfectos()
-        {
-            listaDeEfectos.Items.Clear();
-            int cantidadDeEfectos = dibujador.listDeEfectos.Count;
-            for (int i = 1; i <= cantidadDeEfectos; i++)
-            {
-                listaDeEfectos.Items.Add(dibujador.listDeEfectos.ElementAt(i-1));
-            }
-        }
-
         private void renombrarPoligonoToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (esPosible())
@@ -623,70 +886,74 @@ namespace PaintJ
                 efecto = "nuevoNombre";
             }
         }
-
         private void iniciarGrabacionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (esPosible())
             {
                 grabando = true;
                 aviso.Text = "Grabacion iniciada";
+                listaDeEfectos.Items.Clear();
                 dibujador.nuevaListaDeEfectos();
-                dibujador.objeto.listaDePoligonos.Last().setPuntoReferenciaEnCentro();
-                dibujador.añadirACola("trasladar",
-                    dibujador.objeto.getPoligono(
-                        dibujador.objeto.listaDePoligonos.Count-1).puntoReferencia);
+                dibujador.setObjetoAnterior();
+                objetoInicial = new Objeto();
+                objetoInicial = new Objeto(dibujador.objeto);
+            }
+        }
+        private void terminarGrabacionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (esPosible()&&grabando)
+            {
+                Refresh();
+                grabando = false;
+                aviso.Text = "Grabacion terminada";
+                aviso.Text = dibujador.listaDeEfectos.Count.ToString();
+                dibujador.setObjeto(objetoInicial);
+                dibujador.pintar();
+            }
+        }
+        private void listaDePoligonos_MouseClick(object sender, MouseEventArgs e)
+        {
+            dibujador.nuevaListaDeIndices();
+            int indiceDePoligonoSeleccionado = listaDePoligonos.SelectedIndex;
+            if (indiceDePoligonoSeleccionado >= 0)
+            {
+                listaDePoligonos.SetItemChecked(indiceDePoligonoSeleccionado, true);
+            }
+            foreach (int indiceChekeado in listaDePoligonos.CheckedIndices)
+            {
+                dibujador.addIndice(indiceChekeado);
+            }
+        }
+        private void borrarUltimaAnimacionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (grabando)
+            {
+                dibujador.listaDeEfectos.RemoveLast();
+                actualizarListaDeEfectos();
+                aviso.Text = "Movimiento eliminado";
             }
         }
 
-        private void terminarGrabacionToolStripMenuItem_Click(object sender, EventArgs e)
+        private void listaDeEfectos_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            if (esPosible())
-            {
-                grabando = false;
-                aviso.Text = "Grabacion terminada";
-            }
+            dibujador.nuevaListaDeEfectos();
         }
 
         private void reproducirToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int i = 1;
-            Efecto efecto;
             if (!grabando)
             {
-                aviso.Text = "Detener: ";
-                modificarElementos(false, true,false, "","Detener","");
-                while (i <= dibujador.listDeEfectos.Count)
+                if (dibujador.listaDeEfectos.Count != 0)
                 {
-                    Thread.Sleep(1000);
-                    Refresh();
-                    efecto = dibujador.getEfecto(i - 1);
-                    dibujador.objeto.setIndice(efecto.indice);
-                    switch (efecto.nombre)
-                    {
-                        case "trasladar":
-                            dibujador.objeto.trasladarPoligono(efecto.punto);
-                            break;
-                        case "rotarEje":
-                            dibujador.objeto.rotarEje(efecto.numero);
-                            break;
-                        case "rotarOrigen":
-                            dibujador.objeto.rotarOrigen(efecto.numero);
-                            break;
-                        case "rotarPunto":
-                            dibujador.objeto.setPuntoParaRotarPunto(efecto.punto);
-                            i++;
-                            efecto = dibujador.getEfecto(i - 1);
-                            dibujador.objeto.rotarPunto(efecto.numero);
-                            break;
-                        default:
-                            break;
-                    }
-                    if (i == dibujador.listDeEfectos.Count)
-                    {
-                        i = 0;
-                    }
-                    i++;
-                    dibujador.pintar();
+                    modificarElementos(false, true, false, "", "Detener", "");
+                    i = 1;
+                    efecto = "reproducir";
+                    aviso.Text = "Reproduciendo...";
+                    timer.Enabled = true;
+                }
+                else
+                {
+                    aviso.Text = "Nada para reproducir";
                 }
             }
             else
@@ -694,20 +961,6 @@ namespace PaintJ
                 aviso.Text = "Debe dejar de grabar";
             }
         }
-
-        private void listaDePoligonos_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            dibujador.setIndice(-1);
-            foreach (int indexChecked in listaDePoligonos.CheckedIndices)
-            {
-                    listaDePoligonos.SetItemChecked(indexChecked, false);
-            }
-        }
+        #endregion
     }
 }
-
-
-
-
-
-

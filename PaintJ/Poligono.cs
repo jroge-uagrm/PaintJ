@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PaintJ
 {
@@ -11,7 +9,7 @@ namespace PaintJ
     {
         public Punto puntoReferencia;
         public LinkedList<Punto> listaDePuntos;
-        string nombre;
+        public string nombre;
         float[][] matriz;
         public Poligono()
         {
@@ -44,9 +42,7 @@ namespace PaintJ
             float mayorEnZ = float.MinValue;
             for (int i = 1; i <= listaDePuntos.Count; i++)
             {
-                punto = listaDePuntos.First();
-                listaDePuntos.RemoveFirst();
-                listaDePuntos.AddLast(punto);
+                punto = listaDePuntos.ElementAt(i - 1);
                 menorEnX = punto.x < menorEnX ? punto.x : menorEnX;
                 menorEnY = punto.y < menorEnY ? punto.y : menorEnY;
                 menorEnZ = punto.z < menorEnZ ? punto.z : menorEnZ;
@@ -106,7 +102,7 @@ namespace PaintJ
             angulo = (angulo * Math.PI) / 180;
             matriz[0][0] = (float)Math.Cos(angulo);
             matriz[0][1] = -(float)Math.Sin(angulo);
-            matriz[0][2] = xc - (xc * (float)Math.Cos(angulo)) + 
+            matriz[0][2] = xc - (xc * (float)Math.Cos(angulo)) +
                             (yc * (float)Math.Sin(angulo));
             matriz[1][0] = (float)Math.Sin(angulo);
             matriz[1][1] = (float)Math.Cos(angulo);

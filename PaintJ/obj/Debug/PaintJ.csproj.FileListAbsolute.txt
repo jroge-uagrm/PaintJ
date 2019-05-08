@@ -8,3 +8,6 @@ C:\Users\PC\Desktop\Program. Grafica\PaintJ\PaintJ\PaintJ\obj\Debug\PaintJ.cspro
 C:\Users\PC\Desktop\Program. Grafica\PaintJ\PaintJ\PaintJ\obj\Debug\PaintJ.csproj.CoreCompileInputs.cache
 C:\Users\PC\Desktop\Program. Grafica\PaintJ\PaintJ\PaintJ\obj\Debug\PaintJ.exe
 C:\Users\PC\Desktop\Program. Grafica\PaintJ\PaintJ\PaintJ\obj\Debug\PaintJ.pdb
+C:\Users\PC\Desktop\Program. Grafica\PaintJ\PaintJ\PaintJ\bin\Debug\Newtonsoft.Json.dll
+C:\Users\PC\Desktop\Program. Grafica\PaintJ\PaintJ\PaintJ\bin\Debug\Newtonsoft.Json.xml
+C:\Users\PC\Desktop\Program. Grafica\PaintJ\PaintJ\PaintJ\obj\Debug\PaintJ.csproj.CopyComplete
